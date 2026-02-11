@@ -722,6 +722,11 @@
         let sidebarInterval = null;
         let selectedFile = null;
 
+        const userColors = ['#667eea','#e74c3c','#2ecc71','#e67e22','#9b59b6','#1abc9c','#f39c12','#3498db'];
+        function getUserColor(id) {
+            return userColors[id % userColors.length];
+        }
+
         function isMobile() {
             return window.innerWidth <= 768;
         }
@@ -930,7 +935,7 @@
                         : '';
 
                     div.innerHTML = `
-                        <div class="user-avatar">${initials}</div>
+                        <div class="user-avatar" style="background:${getUserColor(user.id)}">${initials}</div>
                         <div class="user-info">
                             <div class="user-name">${user.name} <span class="user-role-badge">${user.role}</span></div>
                             ${privLastMsgHtml}
@@ -1057,7 +1062,7 @@
                         }
 
                         div.innerHTML = `
-                            ${!isSent ? `<div class="message-sender">${msg.sender.name}</div>` : ''}
+                            ${!isSent ? `<div class="message-sender" style="color:${getUserColor(msg.sender.id)}">${msg.sender.name}</div>` : ''}
                             ${fileHtml}
                             ${msg.body ? `<div class="message-text">${escapeHtml(msg.body)}</div>` : ''}
                             <div class="message-time">${new Date(msg.created_at).toLocaleString()}</div>
