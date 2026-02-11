@@ -25,13 +25,30 @@ class ChatController extends Controller
 
         $conversationsArray = $conversations->toArray()['data'] ?? [];
 
-        // Añadir conteo de mensajes no leídos a cada conversación
+        // Añadir conteo de mensajes no leídos y último mensaje a cada conversación
         foreach ($conversationsArray as &$conv) {
             $conversation = Chat::conversations()->getById($conv['conversation_id']);
             $unreadCount = Chat::conversation($conversation)
                 ->setParticipant($request->user())
                 ->unreadCount();
             $conv['unread_count'] = $unreadCount;
+
+            // Último mensaje
+            $lastMessage = Chat::conversation($conversation)
+                ->setParticipant($request->user())
+                ->getMessages();
+            $lastMessageData = is_array($lastMessage) ? $lastMessage : $lastMessage->toArray();
+            $messages = $lastMessageData['data'] ?? $lastMessageData;
+            if (!empty($messages)) {
+                $last = end($messages);
+                $conv['last_message'] = [
+                    'body' => $last['body'] ?? '',
+                    'sender_name' => $last['sender']['name'] ?? '',
+                    'created_at' => $last['created_at'] ?? '',
+                ];
+            } else {
+                $conv['last_message'] = null;
+            }
         }
 
         return response()->json([

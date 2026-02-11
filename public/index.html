@@ -20,7 +20,7 @@
 
         /* Login */
         #loginContainer {
-            display: flex;
+            display: none;
             justify-content: center;
             align-items: center;
             height: 100vh;
@@ -181,6 +181,8 @@
         // Initialize
         if (token) {
             checkAuth();
+        } else {
+            document.getElementById('loginContainer').style.display = 'flex';
         }
 
         async function login() {

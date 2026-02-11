@@ -20,7 +20,7 @@
 
         /* Login */
         #loginContainer {
-            display: flex;
+            display: none;
             justify-content: center;
             align-items: center;
             height: 100vh;
@@ -210,6 +210,16 @@
         .user-role-badge {
             font-size: 12px;
             color: #666;
+        }
+
+        .user-last-message {
+            font-size: 12px;
+            color: #999;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 230px;
+            margin-top: 2px;
         }
 
         .unread-badge {
@@ -613,6 +623,10 @@
                 font-size: 16px;
             }
 
+            .user-last-message {
+                max-width: calc(100vw - 110px);
+            }
+
             /* Empty state smaller */
             #emptyState .empty-icon {
                 font-size: 50px;
@@ -705,6 +719,7 @@
         let currentChatUser = null;
         let allUsers = [];
         let messageInterval = null;
+        let sidebarInterval = null;
         let selectedFile = null;
 
         function isMobile() {
@@ -745,6 +760,8 @@
         // Initialize
         if (token) {
             checkAuth();
+        } else {
+            document.getElementById('loginContainer').style.display = 'flex';
         }
 
         async function login() {
@@ -803,6 +820,10 @@
 
             initMobileState();
             loadUsersAndConversations();
+
+            // Refrescar sidebar cada 3 segundos para badges
+            if (sidebarInterval) clearInterval(sidebarInterval);
+            sidebarInterval = setInterval(loadUsersAndConversations, 3000);
         }
 
         async function loadUsersAndConversations() {
@@ -840,7 +861,10 @@
                             p => p.messageable_id !== currentUser.id
                         );
                         if (otherParticipant) {
-                            privateConversations.set(otherParticipant.messageable_id, conv.unread_count || 0);
+                            privateConversations.set(otherParticipant.messageable_id, {
+                                unread_count: conv.unread_count || 0,
+                                last_message: conv.last_message || null
+                            });
                         }
                     });
 
@@ -861,11 +885,18 @@
                             ? `<span class="unread-badge">${conv.unread_count}</span>`
                             : '';
 
+                        const lastMsg = conv.last_message;
+                        const lastMsgHtml = lastMsg && lastMsg.body
+                            ? `<div class="user-last-message"><b>${lastMsg.sender_name}:</b> ${escapeHtml(lastMsg.body)}</div>`
+                            : lastMsg && !lastMsg.body
+                            ? `<div class="user-last-message"><b>${lastMsg.sender_name}:</b> 📎 Fitxer</div>`
+                            : '';
+
                         div.innerHTML = `
                             <div class="user-avatar" style="background: #4caf50;">👥</div>
                             <div class="user-info">
-                                <div class="user-name">${conv.conversation.name || 'Grup'}</div>
-                                <div class="user-role-badge">Grup</div>
+                                <div class="user-name">${conv.conversation.name || 'Grup'} <span class="user-role-badge">Grup</span></div>
+                                ${lastMsgHtml}
                             </div>
                             ${unreadBadge}
                         `;
@@ -885,16 +916,24 @@
                     }
 
                     const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase();
-                    const unreadCount = privateConversations.get(user.id) || 0;
+                    const privData = privateConversations.get(user.id);
+                    const unreadCount = privData ? privData.unread_count : 0;
                     const unreadBadge = unreadCount > 0
                         ? `<span class="unread-badge">${unreadCount}</span>`
+                        : '';
+
+                    const privLastMsg = privData ? privData.last_message : null;
+                    const privLastMsgHtml = privLastMsg && privLastMsg.body
+                        ? `<div class="user-last-message">${escapeHtml(privLastMsg.body)}</div>`
+                        : privLastMsg && !privLastMsg.body
+                        ? `<div class="user-last-message">📎 Fitxer</div>`
                         : '';
 
                     div.innerHTML = `
                         <div class="user-avatar">${initials}</div>
                         <div class="user-info">
-                            <div class="user-name">${user.name}</div>
-                            <div class="user-role-badge">${user.role}</div>
+                            <div class="user-name">${user.name} <span class="user-role-badge">${user.role}</span></div>
+                            ${privLastMsgHtml}
                         </div>
                         ${unreadBadge}
                     `;
@@ -1128,9 +1167,8 @@
         }
 
         function logout() {
-            if (messageInterval) {
-                clearInterval(messageInterval);
-            }
+            if (messageInterval) clearInterval(messageInterval);
+            if (sidebarInterval) clearInterval(sidebarInterval);
             localStorage.removeItem('token');
             token = null;
             currentUser = null;
