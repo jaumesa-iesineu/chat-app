@@ -20,35 +20,35 @@ class UsersSeeder extends Seeder
             'name' => 'Pràctiques IES Sineu',
         ]);
 
-        // Crear profesor
-        $profesor = User::create([
+        // Crear professor
+        $professor = User::create([
             'name' => 'María García',
-            'email' => 'profesor@example.com',
+            'email' => 'professor@example.com',
             'password' => Hash::make('password123'),
-            'role' => 'profesor',
+            'role' => 'professor',
         ]);
 
-        // Crear alumno
-        $alumno = User::create([
+        // Crear alumne
+        $alumne = User::create([
             'name' => 'Juan López',
-            'email' => 'alumno@example.com',
+            'email' => 'alumne@example.com',
             'password' => Hash::make('password123'),
-            'role' => 'alumno',
+            'role' => 'alumne',
         ]);
 
-        // Crear empresario
-        $empresario = User::create([
+        // Crear empresari
+        $empresari = User::create([
             'name' => 'Carlos Martínez',
-            'email' => 'empresario@example.com',
+            'email' => 'empresari@example.com',
             'password' => Hash::make('password123'),
-            'role' => 'empresario',
+            'role' => 'empresari',
         ]);
 
         // Asignar usuarios al contrato
-        $contract->users()->attach([$profesor->id, $alumno->id, $empresario->id]);
+        $contract->users()->attach([$professor->id, $alumne->id, $empresari->id]);
 
         echo "✅ Contrato creado: {$contract->name}\n";
-        echo "✅ 3 usuarios asignados al contrato: profesor, alumno y empresario\n";
+        echo "✅ 3 usuarios asignados al contrato: professor, alumne y empresari\n";
         echo "Credenciales para todos: password123\n";
     }
 }

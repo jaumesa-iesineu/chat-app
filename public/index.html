@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hola món - Sistema de Mensajeria</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f0f2f5;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Login */
+        #loginContainer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        #loginBox {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            width: 400px;
+        }
+
+        #loginBox h2 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        #loginBox p {
+            margin-bottom: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-bottom: 10px;
+        }
+
+        button:hover {
+            background: #5568d3;
+        }
+
+        /* Dashboard */
+        #dashboard {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        #dashboardBox {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            width: 400px;
+            text-align: center;
+        }
+
+        #dashboardBox h1 {
+            margin-bottom: 30px;
+            color: #333;
+            font-size: 32px;
+        }
+
+        .user-detail {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 5px;
+            text-align: left;
+        }
+
+        .user-detail label {
+            display: block;
+            font-weight: 600;
+            color: #666;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .user-detail span {
+            display: block;
+            color: #333;
+            font-size: 16px;
+        }
+
+        #chatBtn {
+            background: #4caf50;
+            margin-bottom: 10px;
+        }
+
+        #chatBtn:hover {
+            background: #45a049;
+        }
+
+        #logoutBtn {
+            background: #f44336;
+            width: 100%;
+        }
+
+        #logoutBtn:hover {
+            background: #da190b;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Container -->
+    <div id="loginContainer">
+        <div id="loginBox">
+            <h2>Hola món</h2>
+            <p>Correu electrònic: professor@example.com<br>Contrasenya: password123</p>
+            <input type="email" id="emailInput" placeholder="Correu electrònic" value="professor@example.com">
+            <input type="password" id="passwordInput" placeholder="Contrasenya" value="password123">
+            <button onclick="login()">Iniciar sessió</button>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard">
+        <div id="dashboardBox">
+            <h1>Hola món</h1>
+
+            <div class="user-detail">
+                <label>Nom:</label>
+                <span id="userName"></span>
+            </div>
+
+            <div class="user-detail">
+                <label>Rol:</label>
+                <span id="userRole"></span>
+            </div>
+
+            <button id="chatBtn" onclick="goToChat()">Accedir al Xat</button>
+            <button id="logoutBtn" onclick="logout()">Tancar sessió</button>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = '/api';
+        let token = localStorage.getItem('token');
+        let currentUser = null;
+
+        // Initialize
+        if (token) {
+            checkAuth();
+        }
+
+        async function login() {
+            const email = document.getElementById('emailInput').value;
+            const password = document.getElementById('passwordInput').value;
+
+            try {
+                const response = await fetch(`${API_URL}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    token = data.token;
+                    currentUser = data.user;
+                    localStorage.setItem('token', token);
+                    localStorage.setItem('user', JSON.stringify(currentUser));
+                    showDashboard();
+                } else {
+                    alert('Error al iniciar sessió');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error de connexió');
+            }
+        }
+
+        async function checkAuth() {
+            try {
+                const response = await fetch(`${API_URL}/me`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    currentUser = data.user;
+                    showDashboard();
+                } else {
+                    logout();
+                }
+            } catch (error) {
+                logout();
+            }
+        }
+
+        function showDashboard() {
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'flex';
+            document.getElementById('userName').textContent = currentUser.name;
+            document.getElementById('userRole').textContent = currentUser.role;
+        }
+
+        function goToChat() {
+            window.location.href = '/chat.html';
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            token = null;
+            currentUser = null;
+            document.getElementById('loginContainer').style.display = 'flex';
+            document.getElementById('dashboard').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
