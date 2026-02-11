@@ -226,6 +226,9 @@
             background: white;
             padding: 15px 20px;
             border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         #chatTitle {
@@ -452,6 +455,163 @@
             width: 100%;
             margin-top: 10px;
         }
+
+        /* Back button - hidden on desktop */
+        #backBtn {
+            display: none;
+            width: auto;
+            padding: 6px 12px;
+            background: transparent;
+            color: #667eea;
+            font-size: 22px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        /* ====== Mobile Responsive ====== */
+        @media (max-width: 768px) {
+            /* Login */
+            #loginBox {
+                width: 90%;
+                max-width: 400px;
+                padding: 25px;
+            }
+
+            /* Header more compact */
+            #header {
+                padding: 10px 15px;
+            }
+
+            #logoutBtn {
+                padding: 6px 14px;
+                font-size: 13px;
+            }
+
+            #userName {
+                font-size: 14px;
+            }
+
+            /* Main container stacks children */
+            #mainContainer {
+                position: relative;
+            }
+
+            /* Sidebar takes full width */
+            #sidebar {
+                width: 100%;
+                position: absolute;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                z-index: 10;
+            }
+
+            /* Chat area also full width */
+            #chatArea {
+                width: 100%;
+                position: absolute;
+                top: 0;
+                left: 0;
+                bottom: 0;
+            }
+
+            /* When a chat is open: hide sidebar, show chat */
+            #sidebar.mobile-hidden {
+                display: none;
+            }
+
+            #chatArea.mobile-hidden {
+                display: none;
+            }
+
+            /* Show back button on mobile */
+            #backBtn {
+                display: block;
+            }
+
+            /* Messages use more width */
+            .message {
+                max-width: 85%;
+            }
+
+            /* Smaller message file previews */
+            .message-file img,
+            .message-file video {
+                max-width: 220px;
+            }
+
+            /* More compact message input */
+            #messageInputContainer {
+                padding: 10px;
+                gap: 8px;
+            }
+
+            #messageInput {
+                padding: 10px;
+                font-size: 16px; /* prevents iOS zoom */
+            }
+
+            #sendBtn {
+                padding: 10px 18px;
+                font-size: 14px;
+            }
+
+            #attachBtn {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+
+            /* Messages container less padding */
+            #messagesContainer {
+                padding: 10px;
+            }
+
+            /* Chat header compact */
+            #chatHeader {
+                padding: 12px 15px;
+            }
+
+            /* Sidebar header */
+            #sidebarHeader {
+                padding: 12px 15px;
+            }
+
+            /* User items slightly smaller */
+            .user-item {
+                padding: 12px 15px;
+            }
+
+            .user-avatar {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+
+            /* Empty state smaller */
+            #emptyState .empty-icon {
+                font-size: 50px;
+            }
+
+            #emptyState {
+                padding: 20px;
+            }
+
+            /* Group form adapts */
+            #groupFormBox {
+                width: 90%;
+                max-width: 400px;
+            }
+
+            /* File preview compact */
+            .file-preview img,
+            .file-preview video {
+                max-width: 120px;
+                max-height: 90px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -496,6 +656,7 @@
                 </div>
                 <div id="chatView" style="display: none; flex-direction: column; height: 100%;">
                     <div id="chatHeader">
+                        <button id="backBtn" onclick="showSidebar()">&#8592;</button>
                         <div id="chatTitle"></div>
                     </div>
                     <div id="messagesContainer"></div>
@@ -521,6 +682,41 @@
         let allUsers = [];
         let messageInterval = null;
         let selectedFile = null;
+
+        function isMobile() {
+            return window.innerWidth <= 768;
+        }
+
+        function showSidebar() {
+            if (!isMobile()) return;
+            document.getElementById('sidebar').classList.remove('mobile-hidden');
+            document.getElementById('chatArea').classList.add('mobile-hidden');
+        }
+
+        function showChatArea() {
+            if (!isMobile()) return;
+            document.getElementById('sidebar').classList.add('mobile-hidden');
+            document.getElementById('chatArea').classList.remove('mobile-hidden');
+        }
+
+        function initMobileState() {
+            if (isMobile()) {
+                document.getElementById('sidebar').classList.remove('mobile-hidden');
+                document.getElementById('chatArea').classList.add('mobile-hidden');
+            } else {
+                document.getElementById('sidebar').classList.remove('mobile-hidden');
+                document.getElementById('chatArea').classList.remove('mobile-hidden');
+            }
+        }
+
+        window.addEventListener('resize', () => {
+            if (!document.getElementById('chatContainer').style.display ||
+                document.getElementById('chatContainer').style.display === 'none') return;
+            if (!isMobile()) {
+                document.getElementById('sidebar').classList.remove('mobile-hidden');
+                document.getElementById('chatArea').classList.remove('mobile-hidden');
+            }
+        });
 
         // Initialize
         if (token) {
@@ -581,6 +777,7 @@
             document.getElementById('userName').textContent = currentUser.name;
             document.getElementById('userRole').textContent = currentUser.role;
 
+            initMobileState();
             loadUsersAndConversations();
         }
 
@@ -702,6 +899,7 @@
             document.getElementById('emptyState').style.display = 'none';
             document.getElementById('chatView').style.display = 'flex';
             document.getElementById('chatTitle').textContent = conversation.name || 'Grupo';
+            showChatArea();
 
             // Cargar mensajes
             await loadMessages();
@@ -730,6 +928,7 @@
             document.getElementById('chatView').style.display = 'flex';
             document.getElementById('chatTitle').textContent = user.name;
             document.getElementById('messagesContainer').innerHTML = '<div style="text-align: center; color: #999;">Cargando...</div>';
+            showChatArea();
 
             try {
                 // Crear o obtener conversación
