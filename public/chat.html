@@ -107,6 +107,29 @@
             border-radius: 10px;
         }
 
+        #homeBtn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background: #f0f2f5;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background 0.2s;
+            flex-shrink: 0;
+        }
+
+        #homeBtn:hover {
+            background: #e3e6ea;
+        }
+
+        #homeBtn svg {
+            width: 20px;
+            height: 20px;
+            fill: #667eea;
+        }
+
         #logoutBtn {
             width: auto;
             padding: 8px 20px;
@@ -631,6 +654,7 @@
         <!-- Header -->
         <div id="header">
             <div id="userInfo">
+                <a id="homeBtn" href="/index.html" title="Volver al menú"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></a>
                 <span id="userName"></span>
                 <span id="userRole"></span>
             </div>
