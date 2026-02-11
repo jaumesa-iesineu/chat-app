@@ -40,7 +40,7 @@ check_mysql() {
 
 # Funció per verificar si el servidor Laravel està funcionant
 check_laravel() {
-    if lsof -ti:8000 > /dev/null 2>&1; then
+    if lsof -ti:80 > /dev/null 2>&1; then
         return 0
     else
         return 1
@@ -66,10 +66,10 @@ start_all() {
     if check_laravel; then
         echo -e "${YELLOW}Ja està funcionant${NC}"
     else
-        php -d upload_max_filesize=50M -d post_max_size=50M -d memory_limit=256M artisan serve > /tmp/laravel-server.log 2>&1 &
+        sudo php -d upload_max_filesize=50M -d post_max_size=50M -d memory_limit=256M artisan serve --host=0.0.0.0 --port=80 > /tmp/laravel-server.log 2>&1 &
         sleep 2
         if check_laravel; then
-            echo -e "${GREEN}Iniciat a http://localhost:8000${NC}"
+            echo -e "${GREEN}Iniciat a http://localhost:80${NC}"
         else
             echo -e "${RED}Error en iniciar${NC}"
         fi
@@ -77,7 +77,7 @@ start_all() {
 
     echo ""
     echo -e "${GREEN}Serveis iniciats${NC}"
-    echo -e "Xat disponible a: ${BLUE}http://localhost:8000/chat.html${NC}"
+    echo -e "Xat disponible a: ${BLUE}http://localhost:80/chat.html${NC}"
     echo ""
     read -p "Prem Enter per continuar..."
 }
@@ -89,7 +89,7 @@ stop_all() {
     # Aturar servidor Laravel
     echo -ne "Aturant servidor Laravel... "
     if check_laravel; then
-        kill $(lsof -ti:8000) 2>/dev/null
+        kill $(lsof -ti:80) 2>/dev/null
         echo -e "${GREEN}Aturat${NC}"
     else
         echo -e "${YELLOW}No estava funcionant${NC}"
@@ -170,7 +170,7 @@ show_status() {
     # Estat del servidor Laravel
     echo -n "Servidor Laravel: "
     if check_laravel; then
-        echo -e "${GREEN}Funcionant al port 8000${NC}"
+        echo -e "${GREEN}Funcionant al port 80${NC}"
     else
         echo -e "${RED}Aturat${NC}"
     fi
@@ -198,7 +198,7 @@ open_browser() {
     echo -e "${BLUE}Obrint navegador...${NC}"
 
     if check_laravel; then
-        open "http://localhost:8000/chat.html"
+        open "http://localhost/chat.html"
         echo -e "${GREEN}Navegador obert${NC}"
     else
         echo -e "${RED}Error: El servidor no està funcionant. Engega els serveis primer.${NC}"
