@@ -168,11 +168,29 @@ class ChatController extends Controller
         // El mensaje es opcional si hay un archivo
         $messageText = $request->message ?? '';
 
-        $message = Chat::message($messageText)
+        // Musonza\Chat requereix un cos de missatge no buit per enviar. Si
+        // no hi ha cap missatge però s'ha pujat un fitxer, assignem un
+        // marcador mínim perquè la llibreria accepti l'enviament. El
+        // marcador és discret i els clients el poden interpretar al
+        // renderitzar.
+        if (strlen(trim((string) $messageText)) === 0 && $fileData) {
+            // Fem servir un espai d'amplada zero (U+200B) perquè la
+            // llibreria detecti un cos no buit però els clients no
+            // mostraran text visible. També s'establirà el tipus de
+            // missatge a 'file' perquè el frontend renderitzi l'adjunt.
+            $messageText = "\u{200B}";
+        }
+
+        $messageBuilder = Chat::message($messageText)
             ->from($request->user())
             ->to($conversation)
-            ->data($fileData ?? [])
-            ->send();
+            ->data($fileData ?? []);
+
+        if ($fileData) {
+            $messageBuilder = $messageBuilder->type('file');
+        }
+
+        $message = $messageBuilder->send();
 
         return response()->json([
             'message' => $message,
