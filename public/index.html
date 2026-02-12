@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hola món - Sistema de Mensajeria</title>
+    <title>Portal de Comunicacions</title>
     <style>
         * {
             margin: 0;
@@ -11,9 +11,16 @@
             box-sizing: border-box;
         }
 
+        #foto_govern_illes{
+            margin: auto;
+            width: 300px;
+            height: auto;
+            margin-top: 5vh;
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f0f2f5;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f7fa;
             height: 100vh;
             overflow: hidden;
         }
@@ -24,116 +31,405 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #f5f7fa;
+            flex-direction: column;
         }
 
         #loginBox {
             background: white;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-            width: 400px;
+            padding: 50px;
+            border-radius: 2px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            width: 450px;
+            border-top: 4px solid #1f2937;
         }
 
-        #loginBox h2 {
-            margin-bottom: 10px;
-            color: #333;
+        .login-header {
+            text-align: left;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e5e7eb;
         }
 
-        #loginBox p {
-            margin-bottom: 20px;
-            color: #666;
-            font-size: 14px;
+        .login-header h2 {
+            color: #1f2937;
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .login-header p {
+            color: #6b7280;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        #loginBox .help-text {
+            margin-bottom: 25px;
+            color: #4b5563;
+            font-size: 12px;
+            background: #f9fafb;
+            padding: 18px;
+            border-radius: 2px;
+            border-left: 3px solid #6b7280;
+            line-height: 1.6;
         }
 
         input {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             margin-bottom: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            border: 1px solid #d1d5db;
+            border-radius: 2px;
             font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #6b7280;
         }
 
         button {
             width: 100%;
-            padding: 12px;
-            background: #667eea;
+            padding: 14px;
+            background: #1f2937;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 2px;
             font-size: 14px;
+            font-weight: 600;
             cursor: pointer;
-            transition: background 0.3s;
-            margin-bottom: 10px;
+            transition: background 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         button:hover {
-            background: #5568d3;
+            background: #374151;
         }
 
         /* Dashboard */
         #dashboard {
             display: none;
-            justify-content: center;
-            align-items: center;
+            flex-direction: column;
             height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
 
-        #dashboardBox {
-            background: white;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-            width: 400px;
-            text-align: center;
+        /* Header */
+        .gov-header {
+            background: #1f2937;
+            color: white;
+            padding: 0 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 65px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-bottom: 3px solid #3b82f6;
         }
 
-        #dashboardBox h1 {
-            margin-bottom: 30px;
-            color: #333;
-            font-size: 32px;
+        .gov-header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
         }
 
-        .user-detail {
-            margin-bottom: 20px;
-            padding: 15px;
-            background: #f9f9f9;
-            border-radius: 5px;
-            text-align: left;
-        }
-
-        .user-detail label {
-            display: block;
+        .gov-logo {
+            font-size: 18px;
             font-weight: 600;
-            color: #666;
-            font-size: 12px;
-            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .user-detail span {
+        .gov-logo::before {
+            content: '';
+            width: 3px;
+            height: 30px;
+            background: #3b82f6;
             display: block;
-            color: #333;
+        }
+
+        .gov-title {
             font-size: 16px;
+            font-weight: 500;
+            opacity: 0.9;
         }
 
-        #chatBtn {
-            background: #4caf50;
-            margin-bottom: 10px;
+        .gov-header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
         }
 
-        #chatBtn:hover {
-            background: #45a049;
+        .user-info-header {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .user-name-header {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .user-role-header {
+            font-size: 12px;
+            opacity: 0.8;
         }
 
         #logoutBtn {
-            background: #f44336;
-            width: 100%;
+            width: auto;
+            padding: 10px 24px;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.5);
+            font-size: 12px;
         }
 
         #logoutBtn:hover {
-            background: #da190b;
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.8);
+        }
+
+        /* Tabs */
+        .tabs-container {
+            background: white;
+            border-bottom: 1px solid #d1d5db;
+            padding: 0 40px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0;
+        }
+
+        .tab {
+            padding: 18px 35px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            color: #6b7280;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+            position: relative;
+            top: 1px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .tab:hover {
+            color: #1f2937;
+            background: #f9fafb;
+        }
+
+        .tab.active {
+            color: #1f2937;
+            border-bottom-color: #1f2937;
+            background: #ffffff;
+        }
+
+        /* Content */
+        .content-container {
+            flex: 1;
+            overflow: auto;
+            background: #f5f7fa;
+            position: relative;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Chat Tab - Full height without padding */
+        #chatTab {
+            padding: 0;
+            max-width: none;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        #chatTab.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        #chatFrame {
+            flex: 1;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Home Tab */
+        .welcome-section {
+            background: white;
+            padding: 40px 50px;
+            border-radius: 2px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+            border-left: 4px solid #1f2937;
+        }
+
+        .welcome-section h1 {
+            color: #1f2937;
+            font-size: 26px;
+            margin-bottom: 15px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .welcome-section p {
+            color: #4b5563;
+            font-size: 15px;
+            line-height: 1.8;
+        }
+
+        .info-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .info-card {
+            background: white;
+            padding: 35px;
+            border-radius: 2px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            border-left: 4px solid #6b7280;
+            transition: border-color 0.3s;
+        }
+
+        .info-card:hover {
+            border-left-color: #3b82f6;
+        }
+
+        .info-card h3 {
+            color: #1f2937;
+            font-size: 16px;
+            margin-bottom: 15px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-card p {
+            color: #4b5563;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .user-profile-section {
+            background: white;
+            padding: 35px 50px;
+            border-radius: 2px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+            border-left: 4px solid #1f2937;
+        }
+
+        .user-profile-section h2 {
+            color: #1f2937;
+            font-size: 18px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .profile-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .profile-item {
+            padding: 20px;
+            background: #f9fafb;
+            border-radius: 2px;
+            border-left: 3px solid #6b7280;
+        }
+
+        .profile-item label {
+            display: block;
+            font-weight: 600;
+            color: #6b7280;
+            font-size: 11px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            letter-spacing: 0.8px;
+        }
+
+        .profile-item span {
+            display: block;
+            color: #1f2937;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .status-active {
+            color: #059669 !important;
+            font-weight: 600;
+        }
+
+        /* Support Tab */
+        .support-section {
+            background: white;
+            padding: 80px;
+            border-radius: 2px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            text-align: center;
+            border-left: 4px solid #6b7280;
+        }
+
+        .support-section h2 {
+            color: #1f2937;
+            font-size: 24px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .support-section p {
+            color: #4b5563;
+            font-size: 15px;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .development-badge {
+            display: inline-block;
+            background: #e5e7eb;
+            color: #1f2937;
+            padding: 10px 25px;
+            border-radius: 2px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 30px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            border: 1px solid #d1d5db;
         }
     </style>
 </head>
@@ -141,35 +437,128 @@
     <!-- Login Container -->
     <div id="loginContainer">
         <div id="loginBox">
-            <h2>Hola món</h2>
-            <p>Correus d'exemple:<br>
-            professor@example.com<br>
-            alumne@example.com<br>
-            empresari@example.com<br>
-            <br>Contrasenya: password123</p>
+            <div class="login-header">
+                <h2>INICIAR SESSIÓ</h2>
+            </div>
+            <div class="help-text">
+                <strong>Correus d'exemple:</strong><br>
+                professor@example.com<br>
+                alumne@example.com<br>
+                empresari@example.com<br>
+                <br><strong>Contrasenya:</strong> password123
+            </div>
             <input type="email" id="emailInput" placeholder="Correu electrònic" value="professor@example.com">
             <input type="password" id="passwordInput" placeholder="Contrasenya" value="password123">
             <button onclick="login()">Iniciar sessió</button>
+        </div>
+        <div>
+            <img id="foto_govern_illes" src="src\logo_govern_illes_balears.png" alt="">
         </div>
     </div>
 
     <!-- Dashboard -->
     <div id="dashboard">
-        <div id="dashboardBox">
-            <h1>Hola món</h1>
+        <!-- Header -->
+        <div class="gov-header">
+            <div class="gov-header-left">
+                <div class="gov-logo">
+                    <span>Portal de Comunicacions</span>
+                </div>
+            </div>
+            <div class="gov-header-right">
+                <div class="user-info-header">
+                    <span class="user-name-header" id="userNameHeader"></span>
+                    <span class="user-role-header" id="userRoleHeader"></span>
+                </div>
+                <button id="logoutBtn" onclick="logout()">Tancar sessió</button>
+            </div>
+        </div>
 
-            <div class="user-detail">
-                <label>Nom:</label>
-                <span id="userName"></span>
+        <!-- Tabs -->
+        <div class="tabs-container">
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('home')">Inici</div>
+                <div class="tab" onclick="switchTab('chat')">Xat</div>
+                <div class="tab" onclick="switchTab('support')">Assistència</div>
+                <div class="tab" onclick="switchTab('companies')">Empreses</div>
+                <div class="tab" onclick="switchTab('profile')">Perfil</div>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content-container">
+            <!-- Home Tab -->
+            <div id="homeTab" class="tab-content active">
+                <div class="welcome-section">
+                    <h1>Benvingut/da al Portal de Comunicacions</h1>
+                    <p>Sistema centralitzat de comunicacions i gestió d'assistència.</p>
+                </div>
+
+                <div class="user-profile-section">
+                    <h2>El teu perfil</h2>
+                    <div class="profile-details">
+                        <div class="profile-item">
+                            <label>Nom complet</label>
+                            <span id="userName"></span>
+                        </div>
+                        <div class="profile-item">
+                            <label>Rol</label>
+                            <span id="userRole"></span>
+                        </div>
+                        <div class="profile-item">
+                            <label>Estat</label>
+                            <span class="status-active">ACTIU</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-cards">
+                    <div class="info-card">
+                        <h3>Sistema de Missatgeria</h3>
+                        <p>Comunica't de forma segura amb altres usuaris del sistema.</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>Seguretat i Privacitat</h3>
+                        <p>Comunicacions protegides amb protocols de seguretat avançats.</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>Assistència</h3>
+                        <p>Consulta i gestiona el registre dels teus dies d'assistència.</p>
+                    </div>
+                </div>
             </div>
 
-            <div class="user-detail">
-                <label>Rol:</label>
-                <span id="userRole"></span>
+            <!-- Chat Tab -->
+            <div id="chatTab" class="tab-content">
+                <iframe id="chatFrame" src="/chat.html"></iframe>
             </div>
 
-            <button id="chatBtn" onclick="goToChat()">Accedir al Xat</button>
-            <button id="logoutBtn" onclick="logout()">Tancar sessió</button>
+            <!-- Support Tab -->
+            <div id="supportTab" class="tab-content">
+                <div class="support-section">
+                    <h2>Assistència</h2>
+                    <p>Aquesta secció està en desenvolupament.</p>
+                    <span class="development-badge">En desenvolupament</span>
+                </div>
+            </div>
+
+            <!-- Companies Tab -->
+            <div id="companiesTab" class="tab-content">
+                <div class="support-section">
+                    <h2>Empreses</h2>
+                    <p>Aquesta secció està en desenvolupament.</p>
+                    <span class="development-badge">En desenvolupament</span>
+                </div>
+            </div>
+
+            <!-- Profile Tab -->
+            <div id="profileTab" class="tab-content">
+                <div class="support-section">
+                    <h2>Perfil</h2>
+                    <p>Aquesta secció està en desenvolupament.</p>
+                    <span class="development-badge">En desenvolupament</span>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -237,12 +626,40 @@
         function showDashboard() {
             document.getElementById('loginContainer').style.display = 'none';
             document.getElementById('dashboard').style.display = 'flex';
+
+            // Update user info in multiple places
             document.getElementById('userName').textContent = currentUser.name;
             document.getElementById('userRole').textContent = currentUser.role;
+            document.getElementById('userNameHeader').textContent = currentUser.name;
+            document.getElementById('userRoleHeader').textContent = currentUser.role;
         }
 
-        function goToChat() {
-            window.location.href = '/chat.html';
+        function switchTab(tabName) {
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Remove active class from all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Add active class to selected tab
+            event.target.classList.add('active');
+
+            // Show corresponding content
+            if (tabName === 'home') {
+                document.getElementById('homeTab').classList.add('active');
+            } else if (tabName === 'chat') {
+                document.getElementById('chatTab').classList.add('active');
+            } else if (tabName === 'support') {
+                document.getElementById('supportTab').classList.add('active');
+            } else if (tabName === 'companies') {
+                document.getElementById('companiesTab').classList.add('active');
+            } else if (tabName === 'profile') {
+                document.getElementById('profileTab').classList.add('active');
+            }
         }
 
         function logout() {

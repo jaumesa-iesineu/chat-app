@@ -110,29 +110,6 @@
             border-radius: 10px;
         }
 
-        #homeBtn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 36px;
-            height: 36px;
-            background: #f0f2f5;
-            border-radius: 8px;
-            text-decoration: none;
-            transition: background 0.2s;
-            flex-shrink: 0;
-        }
-
-        #homeBtn:hover {
-            background: #e3e6ea;
-        }
-
-        #homeBtn svg {
-            width: 20px;
-            height: 20px;
-            fill: #667eea;
-        }
-
         #logoutBtn {
             width: auto;
             padding: 8px 20px;
@@ -401,6 +378,23 @@
         .message-file video {
             max-width: 300px;
             border-radius: 8px;
+        }
+
+        .message-file a {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            background: #f0f2f5;
+            border-radius: 8px;
+            color: #333;
+            text-decoration: none;
+            font-size: 14px;
+            word-break: break-all;
+        }
+
+        .message-file a:hover {
+            background: #e3e6ea;
         }
 
         /* Empty State */
@@ -672,7 +666,6 @@
         <!-- Header -->
         <div id="header">
             <div id="userInfo">
-                <a id="homeBtn" href="/index.html" title="Tornar al menú"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></a>
                 <span id="userName"></span>
                 <span id="userRole"></span>
             </div>
@@ -704,7 +697,7 @@
                     <div id="messagesContainer"></div>
                     <div id="filePreviewContainer"></div>
                     <div id="messageInputContainer">
-                        <input type="file" id="fileInput" accept="image/*,video/*" onchange="handleFileSelect(event)">
+                        <input type="file" id="fileInput" onchange="handleFileSelect(event)">
                         <button id="attachBtn" onclick="document.getElementById('fileInput').click()">📎</button>
                         <input type="text" id="messageInput" placeholder="Escriu un missatge..." onkeypress="if(event.key==='Enter') sendMessage()">
                         <button id="sendBtn" onclick="sendMessage()">Enviar</button>
@@ -1062,6 +1055,8 @@
                                 fileHtml = `<div class="message-file"><img src="${msg.data.url}" alt="${msg.data.original_name}" onclick="window.open('${msg.data.url}', '_blank')"></div>`;
                             } else if (msg.data.mime_type && msg.data.mime_type.startsWith('video/')) {
                                 fileHtml = `<div class="message-file"><video src="${msg.data.url}" controls></video></div>`;
+                            } else {
+                                fileHtml = `<div class="message-file"><a href="${msg.data.url}" target="_blank" download="${escapeHtml(msg.data.original_name)}">📄 ${escapeHtml(msg.data.original_name)}</a></div>`;
                             }
                         }
 
@@ -1106,6 +1101,11 @@
                 video.src = URL.createObjectURL(file);
                 video.controls = true;
                 preview.appendChild(video);
+            } else {
+                const icon = document.createElement('span');
+                icon.textContent = '📄';
+                icon.style.fontSize = '40px';
+                preview.appendChild(icon);
             }
 
             const fileName = document.createElement('span');

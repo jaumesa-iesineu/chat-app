@@ -137,7 +137,7 @@ class ChatController extends Controller
     {
         $request->validate([
             'message' => 'nullable|string|max:5000',
-            'file' => 'nullable|file|mimes:jpeg,jpg,png,gif,mp4,mov,avi,webm|max:51200', // 50MB max
+            'file' => 'nullable|file|max:51200', // 50MB max
         ]);
 
         $conversation = Chat::conversations()->getById($conversationId);
