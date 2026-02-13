@@ -14,20 +14,20 @@ class EmpresaSeeder extends Seeder
     public function run(): void
     {
         Empresa::create([
-            'title' => 'Tech Balears',
-            'description' => 'Empresa de desenvolupament de software',
+            'title' => 'Empresa 1',
+            'description' => 'Desenvolupament de software',
             'location' => 'Palma',
         ]);
 
         Empresa::create([
-            'title' => 'Serveis Insulars',
-            'description' => 'Consultoria i serveis empresarials',
+            'title' => 'Empresa 2',
+            'description' => 'Programació Orientada a Objectes',
             'location' => 'Inca',
         ]);
 
         Empresa::create([
-            'title' => 'Mediterrani Digital',
-            'description' => 'Agència de màrqueting digital',
+            'title' => 'Empresa 3',
+            'description' => 'Màrqueting digital',
             'location' => 'Manacor',
         ]);
     }
