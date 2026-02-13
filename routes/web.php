@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\File;
+use App\Http\Controllers\EmpresaController;
 
 // Serve index.html as home page
 Route::get('/', function () {
@@ -22,3 +23,4 @@ Route::get('/chat.html', function () {
     }
     abort(404);
 })->name('chat');
+

@@ -418,6 +418,16 @@
             margin-bottom: 10px;
         }
 
+        /* Empreses */
+        #empresesContainer {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .empresa-item {
+            padding: 10px 0;
+        }
+
         .development-badge {
             display: inline-block;
             background: #e5e7eb;
@@ -512,20 +522,6 @@
                     </div>
                 </div>
 
-                <div class="info-cards">
-                    <div class="info-card">
-                        <h3>Sistema de Missatgeria</h3>
-                        <p>Comunica't de forma segura amb altres usuaris del sistema.</p>
-                    </div>
-                    <div class="info-card">
-                        <h3>Seguretat i Privacitat</h3>
-                        <p>Comunicacions protegides amb protocols de seguretat avançats.</p>
-                    </div>
-                    <div class="info-card">
-                        <h3>Assistència</h3>
-                        <p>Consulta i gestiona el registre dels teus dies d'assistència.</p>
-                    </div>
-                </div>
             </div>
 
             <!-- Chat Tab -->
@@ -544,10 +540,12 @@
 
             <!-- Companies Tab -->
             <div id="companiesTab" class="tab-content">
-                <div class="support-section">
-                    <h2>Empreses</h2>
-                    <p>Aquesta secció està en desenvolupament.</p>
-                    <span class="development-badge">En desenvolupament</span>
+                <div class="welcome-section">
+                    <h1>Empreses</h1>
+                    <p>Llistat d'empreses registrades al sistema.</p>
+                </div>
+                <div id="empresesContainer" class="info-cards">
+                    <p>Carregant empreses...</p>
                 </div>
             </div>
 
@@ -657,8 +655,39 @@
                 document.getElementById('supportTab').classList.add('active');
             } else if (tabName === 'companies') {
                 document.getElementById('companiesTab').classList.add('active');
+                carregarEmpreses();
             } else if (tabName === 'profile') {
                 document.getElementById('profileTab').classList.add('active');
+            }
+        }
+
+        async function carregarEmpreses() {
+            const container = document.getElementById('empresesContainer');
+            try {
+                const response = await fetch(`${API_URL}/empreses`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
+                    }
+                });
+                const empreses = await response.json();
+
+                if (empreses.length === 0) {
+                    container.innerHTML = '<p>No hi ha empreses registrades.</p>';
+                    return;
+                }
+
+                container.innerHTML = empreses.map(empresa => `
+                    <div class="empresa-item">
+                        ${empresa.logo ? `<img src="${empresa.logo_url}" alt="${empresa.title}" style="margin-bottom:15px;">` : ''}
+                        <h3>${empresa.title}</h3>
+                        <p>${empresa.description || ''}</p>
+                        ${empresa.location ? `<p>${empresa.location}</p>` : ''}
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error carregant empreses:', error);
+                container.innerHTML = '<p>Error carregant les empreses.</p>';
             }
         }
 
