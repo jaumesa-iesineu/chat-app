@@ -84,9 +84,9 @@
             </div>
         </div>
 
-        <div class="flex-grow-1 overflow-auto" style="background: #f5f7fa;">
-            <div class="tab-content">
-                <div class="tab-pane fade show active" id="homeTab" role="tabpanel" aria-labelledby="home-tab">
+        <div class="flex-grow-1 overflow-hidden" style="background: #f5f7fa;">
+            <div class="tab-content h-100">
+                <div class="tab-pane fade show active overflow-auto" id="homeTab" role="tabpanel" aria-labelledby="home-tab">
                 <div class="container-fluid p-3 p-md-4 p-lg-5">
                 <div class="card gov-card shadow-sm border-0 mb-4">
                     <div class="card-body p-4 p-md-5">
@@ -130,11 +130,11 @@
 
             </div>
 
-            <div class="tab-pane fade p-0 h-100 position-absolute top-0 start-0 end-0 bottom-0" id="chatTab" role="tabpanel" aria-labelledby="chat-tab" style="display: none;">
-                <iframe id="chatFrame" src="/chat.html"></iframe>
+            <div class="tab-pane fade h-100" id="chatTab" role="tabpanel" aria-labelledby="chat-tab">
+                <iframe id="chatFrame" src="/chat.html" class="w-100 h-100 border-0"></iframe>
             </div>
 
-            <div class="tab-pane fade" id="supportTab" role="tabpanel" aria-labelledby="support-tab">
+            <div class="tab-pane fade overflow-auto" id="supportTab" role="tabpanel" aria-labelledby="support-tab">
                 <div class="container-fluid p-3 p-md-4 p-lg-5">
                     <div class="card gov-card-secondary shadow-sm border-0 text-center">
                         <div class="card-body p-5 p-md-6">
@@ -146,7 +146,7 @@
                 </div>
             </div>
 
-            <div class="tab-pane fade" id="companiesTab" role="tabpanel" aria-labelledby="companies-tab">
+            <div class="tab-pane fade overflow-auto" id="companiesTab" role="tabpanel" aria-labelledby="companies-tab">
                 <div class="container-fluid p-3 p-md-4 p-lg-5">
                     <div class="card gov-card shadow-sm border-0 mb-4">
                         <div class="card-body p-4 p-md-5">
@@ -182,7 +182,7 @@
                 </div>
             </div>
 
-            <div class="tab-pane fade" id="profileTab" role="tabpanel" aria-labelledby="profile-tab">
+            <div class="tab-pane fade overflow-auto" id="profileTab" role="tabpanel" aria-labelledby="profile-tab">
                 <div class="container-fluid p-3 p-md-4 p-lg-5">
                     <div class="card gov-card-secondary shadow-sm border-0 text-center">
                         <div class="card-body p-5 p-md-6">

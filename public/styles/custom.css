@@ -93,12 +93,6 @@ body {
   border: 1px solid #d1d5db;
 }
 
-#chatFrame {
-  border: none;
-  width: 100%;
-  height: 100%;
-}
-
 .chat-login-gradient {
   background: linear-gradient(135deg, var(--chat-purple-gradient-start) 0%, var(--chat-purple-gradient-end) 100%);
 }
