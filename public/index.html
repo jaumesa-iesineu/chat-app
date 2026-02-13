@@ -4,131 +4,195 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal de Comunicacions</title>
-    <link rel="stylesheet" href="styles/index.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles/custom.css">
 </head>
 <body>
-    <!-- Login Container -->
-    <div id="loginContainer">
-        <div id="loginBox">
-            <div class="login-header">
-                <h2>INICIAR SESSIÓ</h2>
+    <div id="loginContainer" class="container-fluid vh-100 d-flex justify-content-center align-items-center flex-column" style="background: #f5f7fa; display: none !important;">
+        <div class="row justify-content-center w-100">
+            <div class="col-11 col-sm-10 col-md-8 col-lg-6 col-xl-5 col-xxl-4">
+                <div class="card shadow border-0 border-top border-4 border-dark">
+                    <div class="card-body p-4 p-sm-5">
+                        <div class="border-bottom pb-3 mb-4">
+                            <h2 class="card-title text-dark fs-5 fw-semibold text-uppercase mb-1" style="letter-spacing: 0.5px;">INICIAR SESSIÓ</h2>
+                        </div>
+                        <div class="alert alert-light border-start border-3 border-secondary mb-4" role="alert">
+                            <small class="d-block lh-lg">
+                                <strong>Correus d'exemple:</strong><br>
+                                professor@example.com<br>
+                                alumne@example.com<br>
+                                empresari@example.com<br>
+                                <br><strong>Contrasenya:</strong> password123
+                            </small>
+                        </div>
+                        <form onsubmit="event.preventDefault(); login();">
+                            <div class="mb-3">
+                                <input type="email" id="emailInput" class="form-control form-control-lg" placeholder="Correu electrònic" value="professor@example.com" required>
+                            </div>
+                            <div class="mb-4">
+                                <input type="password" id="passwordInput" class="form-control form-control-lg" placeholder="Contrasenya" value="password123" required>
+                            </div>
+                            <button type="submit" class="btn btn-dark btn-lg w-100 text-uppercase fw-semibold" style="letter-spacing: 0.5px;">Iniciar sessió</button>
+                        </form>
+                    </div>
+                </div>
             </div>
-            <div class="help-text">
-                <strong>Correus d'exemple:</strong><br>
-                professor@example.com<br>
-                alumne@example.com<br>
-                empresari@example.com<br>
-                <br><strong>Contrasenya:</strong> password123
-            </div>
-            <input type="email" id="emailInput" placeholder="Correu electrònic" value="professor@example.com">
-            <input type="password" id="passwordInput" placeholder="Contrasenya" value="password123">
-            <button onclick="login()">Iniciar sessió</button>
         </div>
-        <div>
-            <img id="foto_govern_illes" src="src\logo_govern_illes_balears.png" alt="">
+        <div class="row justify-content-center w-100 mt-4">
+            <div class="col-auto">
+                <img id="foto_govern_illes" src="src/logo_govern_illes_balears.png" alt="Govern Illes Balears" class="img-fluid">
+            </div>
         </div>
     </div>
 
-    <!-- Dashboard -->
-    <div id="dashboard">
-        <!-- Header -->
-        <div class="gov-header">
-            <div class="gov-header-left">
-                <div class="gov-logo">
-                    <span>Portal de Comunicacions</span>
+    <div id="dashboard" class="d-flex flex-column vh-100" style="display: none !important;">
+        <nav class="navbar navbar-dark gov-header">
+            <div class="container-fluid px-3 px-md-4 px-lg-5">
+                <div class="d-flex align-items-center">
+                    <span class="gov-logo-bar"></span>
+                    <span class="navbar-brand mb-0 fs-6 text-uppercase fw-semibold" style="letter-spacing: 0.5px;">Portal de Comunicacions</span>
+                </div>
+                <div class="d-flex align-items-center gap-2 gap-md-3">
+                    <div class="d-none d-sm-flex flex-column align-items-end text-white">
+                        <span class="fw-semibold small" id="userNameHeader"></span>
+                        <span class="small opacity-75" style="font-size: 0.75rem;" id="userRoleHeader"></span>
+                    </div>
+                    <button type="button" class="btn btn-outline-light btn-sm text-uppercase" style="letter-spacing: 0.5px; font-size: 0.75rem;" id="logoutBtn" onclick="logout()">Tancar sessió</button>
                 </div>
             </div>
-            <div class="gov-header-right">
-                <div class="user-info-header">
-                    <span class="user-name-header" id="userNameHeader"></span>
-                    <span class="user-role-header" id="userRoleHeader"></span>
-                </div>
-                <button id="logoutBtn" onclick="logout()">Tancar sessió</button>
+        </nav>
+
+        <div class="bg-white border-bottom">
+            <div class="container-fluid px-3 px-md-4 px-lg-5">
+                <ul class="nav nav-tabs border-0 gov-tabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#homeTab" type="button" role="tab" aria-controls="homeTab" aria-selected="true" onclick="switchTab('home')">Inici</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="chat-tab" data-bs-toggle="tab" data-bs-target="#chatTab" type="button" role="tab" aria-controls="chatTab" aria-selected="false" onclick="switchTab('chat')">Xat</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="support-tab" data-bs-toggle="tab" data-bs-target="#supportTab" type="button" role="tab" aria-controls="supportTab" aria-selected="false" onclick="switchTab('support')">Assistència</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="companies-tab" data-bs-toggle="tab" data-bs-target="#companiesTab" type="button" role="tab" aria-controls="companiesTab" aria-selected="false" onclick="switchTab('companies')">Empreses</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profileTab" type="button" role="tab" aria-controls="profileTab" aria-selected="false" onclick="switchTab('profile')">Perfil</button>
+                    </li>
+                </ul>
             </div>
         </div>
 
-        <!-- Tabs -->
-        <div class="tabs-container">
-            <div class="tabs">
-                <div class="tab active" onclick="switchTab('home')">Inici</div>
-                <div class="tab" onclick="switchTab('chat')">Xat</div>
-                <div class="tab" onclick="switchTab('support')">Assistència</div>
-                <div class="tab" onclick="switchTab('companies')">Empreses</div>
-                <div class="tab" onclick="switchTab('profile')">Perfil</div>
-            </div>
-        </div>
-
-        <!-- Content -->
-        <div class="content-container">
-            <!-- Home Tab -->
-            <div id="homeTab" class="tab-content active">
-                <div class="welcome-section">
-                    <h1>Benvingut/da al Portal de Comunicacions</h1>
-                    <p>Sistema centralitzat de comunicacions i gestió d'assistència.</p>
-                </div>
-
-                <div class="user-profile-section">
-                    <h2>El teu perfil</h2>
-                    <div class="profile-details">
-                        <div class="profile-item">
-                            <label>Nom complet</label>
-                            <span id="userName"></span>
-                        </div>
-                        <div class="profile-item">
-                            <label>Rol</label>
-                            <span id="userRole"></span>
-                        </div>
-                        <div class="profile-item">
-                            <label>Estat</label>
-                            <span class="status-active">ACTIU</span>
-                        </div>
+        <div class="flex-grow-1 overflow-auto" style="background: #f5f7fa;">
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="homeTab" role="tabpanel" aria-labelledby="home-tab">
+                <div class="container-fluid p-3 p-md-4 p-lg-5">
+                <div class="card gov-card shadow-sm border-0 mb-4">
+                    <div class="card-body p-4 p-md-5">
+                        <h1 class="card-title fs-4 text-dark text-uppercase fw-semibold mb-3" style="letter-spacing: 0.5px;">Benvingut/da al Portal de Comunicacions</h1>
+                        <p class="card-text text-muted mb-0 lh-lg">Sistema centralitzat de comunicacions i gestió d'assistència.</p>
                     </div>
                 </div>
 
+                <div class="card gov-card shadow-sm border-0">
+                    <div class="card-body p-4 p-md-5">
+                        <h2 class="fs-5 text-dark text-uppercase fw-semibold pb-3 mb-4 border-bottom" style="letter-spacing: 0.5px;">El teu perfil</h2>
+                        <div class="row g-3 g-md-4">
+                            <div class="col-12 col-md-6 col-lg-4">
+                                <div class="card gov-card-secondary bg-light border-0">
+                                    <div class="card-body p-3 p-md-4">
+                                        <label class="text-muted text-uppercase small fw-bold d-block mb-2" style="letter-spacing: 0.8px; font-size: 0.6875rem;">Nom complet</label>
+                                        <span class="d-block fs-5 text-dark fw-medium" id="userName"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6 col-lg-4">
+                                <div class="card gov-card-secondary bg-light border-0">
+                                    <div class="card-body p-3 p-md-4">
+                                        <label class="text-muted text-uppercase small fw-bold d-block mb-2" style="letter-spacing: 0.8px; font-size: 0.6875rem;">Rol</label>
+                                        <span class="d-block fs-5 text-dark fw-medium" id="userRole"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6 col-lg-4">
+                                <div class="card gov-card-secondary bg-light border-0">
+                                    <div class="card-body p-3 p-md-4">
+                                        <label class="text-muted text-uppercase small fw-bold d-block mb-2" style="letter-spacing: 0.8px; font-size: 0.6875rem;">Estat</label>
+                                        <span class="d-block fs-5 fw-semibold" style="color: #059669;">ACTIU</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+
             </div>
 
-            <!-- Chat Tab -->
-            <div id="chatTab" class="tab-content">
+            <div class="tab-pane fade p-0 h-100 position-absolute top-0 start-0 end-0 bottom-0" id="chatTab" role="tabpanel" aria-labelledby="chat-tab" style="display: none;">
                 <iframe id="chatFrame" src="/chat.html"></iframe>
             </div>
 
-            <!-- Support Tab -->
-            <div id="supportTab" class="tab-content">
-                <div class="support-section">
-                    <h2>Assistència</h2>
-                    <p>Aquesta secció està en desenvolupament.</p>
-                    <span class="development-badge">En desenvolupament</span>
+            <div class="tab-pane fade" id="supportTab" role="tabpanel" aria-labelledby="support-tab">
+                <div class="container-fluid p-3 p-md-4 p-lg-5">
+                    <div class="card gov-card-secondary shadow-sm border-0 text-center">
+                        <div class="card-body p-5 p-md-6">
+                            <h2 class="fs-4 text-dark text-uppercase fw-semibold mb-3" style="letter-spacing: 0.5px;">Assistència</h2>
+                            <p class="text-muted mb-4 lh-lg">Aquesta secció està en desenvolupament.</p>
+                            <span class="development-badge">En desenvolupament</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Companies Tab -->
+            <div class="tab-pane fade" id="companiesTab" role="tabpanel" aria-labelledby="companies-tab">
+                <div class="container-fluid p-3 p-md-4 p-lg-5">
+                    <div class="card gov-card shadow-sm border-0 mb-4">
+                        <div class="card-body p-4 p-md-5">
+                            <h1 class="card-title fs-4 text-dark text-uppercase fw-semibold mb-3" style="letter-spacing: 0.5px;">Empreses</h1>
+                            <p class="card-text text-muted mb-0 lh-lg">Llistat d'empreses registrades al sistema.</p>
+                        </div>
+                    </div>
 
-            
-            <div id="companiesTab" class="tab-content">
-                <div class="welcome-section">
-                    <h1>Empreses</h1>
-                    <p>Llistat d'empreses registrades al sistema.</p>
-                </div>
-                <div class="search-container">
-                    <input
-                        type="text"
-                        id="searchEmpreses"
-                        placeholder="Cerca empreses per nom, descripció o ubicació..."
-                        oninput="filtrarEmpreses()"
-                    >
-                </div>
-                <div id="empresesContainer" class="info-cards">
-                    <p>Carregant empreses...</p>
+                    <div class="card shadow-sm border-0 mb-4">
+                        <div class="card-body p-3 p-md-4">
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-search text-muted" viewBox="0 0 16 16">
+                                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                                    </svg>
+                                </span>
+                                <input
+                                    type="text"
+                                    id="searchEmpreses"
+                                    class="form-control border-start-0 bg-light"
+                                    placeholder="Cerca empreses per nom, descripció o ubicació..."
+                                    oninput="filtrarEmpreses()"
+                                >
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="empresesContainer" class="row g-3 g-md-4">
+                        <div class="col-12">
+                            <p class="text-center text-muted">Carregant empreses...</p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Profile Tab -->
-            <div id="profileTab" class="tab-content">
-                <div class="support-section">
-                    <h2>Perfil</h2>
-                    <p>Aquesta secció està en desenvolupament.</p>
-                    <span class="development-badge">En desenvolupament</span>
+            <div class="tab-pane fade" id="profileTab" role="tabpanel" aria-labelledby="profile-tab">
+                <div class="container-fluid p-3 p-md-4 p-lg-5">
+                    <div class="card gov-card-secondary shadow-sm border-0 text-center">
+                        <div class="card-body p-5 p-md-6">
+                            <h2 class="fs-4 text-dark text-uppercase fw-semibold mb-3" style="letter-spacing: 0.5px;">Perfil</h2>
+                            <p class="text-muted mb-4 lh-lg">Aquesta secció està en desenvolupament.</p>
+                            <span class="development-badge">En desenvolupament</span>
+                        </div>
+                    </div>
                 </div>
+            </div>
             </div>
         </div>
     </div>
@@ -138,11 +202,11 @@
         let token = localStorage.getItem('token');
         let currentUser = null;
 
-        // Initialize
         if (token) {
             checkAuth();
         } else {
             document.getElementById('loginContainer').style.display = 'flex';
+            document.getElementById('loginContainer').classList.remove('d-none');
         }
 
         async function login() {
@@ -196,94 +260,66 @@
 
         function showDashboard() {
             document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('loginContainer').classList.add('d-none');
             document.getElementById('dashboard').style.display = 'flex';
+            document.getElementById('dashboard').classList.remove('d-none');
 
-            // Update user info in multiple places
             document.getElementById('userName').textContent = currentUser.name;
             document.getElementById('userRole').textContent = currentUser.role;
             document.getElementById('userNameHeader').textContent = currentUser.name;
             document.getElementById('userRoleHeader').textContent = currentUser.role;
 
-            // Restore active tab from localStorage
             const activeTab = localStorage.getItem('activeTab') || 'home';
             restoreTab(activeTab);
         }
 
         function restoreTab(tabName) {
-            // Remove active class from all tabs
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-
-            // Remove active class from all tab contents
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.remove('active');
-            });
-
-            // Find and activate the correct tab button
-            const tabButtons = document.querySelectorAll('.tab');
             const tabMap = {
-                'home': 0,
-                'chat': 1,
-                'support': 2,
-                'companies': 3,
-                'profile': 4
+                'home': 'home-tab',
+                'chat': 'chat-tab',
+                'support': 'support-tab',
+                'companies': 'companies-tab',
+                'profile': 'profile-tab'
             };
 
-            if (tabMap[tabName] !== undefined) {
-                tabButtons[tabMap[tabName]].classList.add('active');
-            }
+            const tabId = tabMap[tabName];
+            if (tabId) {
+                const tabElement = document.getElementById(tabId);
+                if (tabElement) {
+                    const tab = new bootstrap.Tab(tabElement);
+                    tab.show();
 
-            // Show corresponding content
-            if (tabName === 'home') {
-                document.getElementById('homeTab').classList.add('active');
-            } else if (tabName === 'chat') {
-                document.getElementById('chatTab').classList.add('active');
-                // Reload iframe to ensure it has the current token
-                const iframe = document.getElementById('chatFrame');
-                iframe.src = iframe.src;
-            } else if (tabName === 'support') {
-                document.getElementById('supportTab').classList.add('active');
-            } else if (tabName === 'companies') {
-                document.getElementById('companiesTab').classList.add('active');
-                carregarEmpreses();
-            } else if (tabName === 'profile') {
-                document.getElementById('profileTab').classList.add('active');
+                    if (tabName === 'chat') {
+                        setTimeout(() => {
+                            const iframe = document.getElementById('chatFrame');
+                            iframe.src = iframe.src;
+                        }, 100);
+                    }
+
+                    if (tabName === 'companies') {
+                        setTimeout(() => carregarEmpreses(), 100);
+                    }
+                }
             }
         }
 
         function switchTab(tabName) {
-            // Save active tab to localStorage
             localStorage.setItem('activeTab', tabName);
 
-            // Remove active class from all tabs
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
+            if (tabName === 'chat') {
+                setTimeout(() => {
+                    const iframe = document.getElementById('chatFrame');
+                    if (iframe) {
+                        iframe.src = iframe.src;
+                    }
+                }, 100);
+            }
 
-            // Remove active class from all tab contents
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.remove('active');
-            });
-
-            // Add active class to selected tab
-            event.target.classList.add('active');
-
-            // Show corresponding content
-            if (tabName === 'home') {
-                document.getElementById('homeTab').classList.add('active');
-            } else if (tabName === 'chat') {
-                document.getElementById('chatTab').classList.add('active');
-                // Reload iframe to ensure it has the current token
-                const iframe = document.getElementById('chatFrame');
-                iframe.src = iframe.src;
-            } else if (tabName === 'support') {
-                document.getElementById('supportTab').classList.add('active');
-            } else if (tabName === 'companies') {
-                document.getElementById('companiesTab').classList.add('active');
-                carregarEmpreses();
-            } else if (tabName === 'profile') {
-                document.getElementById('profileTab').classList.add('active');
+            if (tabName === 'companies') {
+                const container = document.getElementById('empresesContainer');
+                if (container && container.children.length === 1 && container.children[0].tagName === 'DIV') {
+                    setTimeout(() => carregarEmpreses(), 100);
+                }
             }
         }
 
@@ -312,17 +348,23 @@
             const container = document.getElementById('empresesContainer');
 
             if (empreses.length === 0) {
-                container.innerHTML = '<p>No s\'han trobat empreses.</p>';
+                container.innerHTML = '<div class="col-12"><div class="alert alert-info text-center" role="alert">No s\'han trobat empreses.</div></div>';
                 return;
             }
 
             container.innerHTML = empreses.map(empresa => `
-                <div class="empresa-item">
-                    ${empresa.logo ? `<img src="${empresa.logo_url}" alt="${empresa.title}" style="margin-bottom:15px;">` : ''}
-                    <h3>${empresa.title}</h3>
-                    <p>${empresa.description || ''}</p>
-                    ${empresa.location ? `<p>${empresa.location}</p>` : ''}
-                    <button class="detalls-empresa">Veure Detalls</button>
+                <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                    <div class="card h-100 shadow-sm border-0">
+                        ${empresa.logo ? `<img src="${empresa.logo_url}" alt="${empresa.title}" class="card-img-top">` : ''}
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title fw-semibold text-dark mb-3">${empresa.title}</h5>
+                            ${empresa.description ? `<p class="card-text text-muted small mb-3 flex-grow-1">${empresa.description}</p>` : ''}
+                            ${empresa.location ? `<p class="card-text text-muted small mb-3"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-geo-alt-fill me-1" viewBox="0 0 16 16"><path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/></svg>${empresa.location}</p>` : ''}
+                        </div>
+                        <div class="card-footer bg-white border-0 pt-0 pb-3 px-3">
+                            <button class="btn btn-primary w-100">Veure Detalls</button>
+                        </div>
+                    </div>
                 </div>
             `).join('');
         }
@@ -349,8 +391,12 @@
             token = null;
             currentUser = null;
             document.getElementById('loginContainer').style.display = 'flex';
+            document.getElementById('loginContainer').classList.remove('d-none');
             document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('dashboard').classList.add('d-none');
         }
     </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
 </html>
