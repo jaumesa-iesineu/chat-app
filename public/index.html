@@ -109,6 +109,14 @@
                     <h1>Empreses</h1>
                     <p>Llistat d'empreses registrades al sistema.</p>
                 </div>
+                <div class="search-container">
+                    <input
+                        type="text"
+                        id="searchEmpreses"
+                        placeholder="Cerca empreses per nom, descripció o ubicació..."
+                        oninput="filtrarEmpreses()"
+                    >
+                </div>
                 <div id="empresesContainer" class="info-cards">
                     <p>Carregant empreses...</p>
                 </div>
@@ -195,9 +203,59 @@
             document.getElementById('userRole').textContent = currentUser.role;
             document.getElementById('userNameHeader').textContent = currentUser.name;
             document.getElementById('userRoleHeader').textContent = currentUser.role;
+
+            // Restore active tab from localStorage
+            const activeTab = localStorage.getItem('activeTab') || 'home';
+            restoreTab(activeTab);
+        }
+
+        function restoreTab(tabName) {
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Remove active class from all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Find and activate the correct tab button
+            const tabButtons = document.querySelectorAll('.tab');
+            const tabMap = {
+                'home': 0,
+                'chat': 1,
+                'support': 2,
+                'companies': 3,
+                'profile': 4
+            };
+
+            if (tabMap[tabName] !== undefined) {
+                tabButtons[tabMap[tabName]].classList.add('active');
+            }
+
+            // Show corresponding content
+            if (tabName === 'home') {
+                document.getElementById('homeTab').classList.add('active');
+            } else if (tabName === 'chat') {
+                document.getElementById('chatTab').classList.add('active');
+                // Reload iframe to ensure it has the current token
+                const iframe = document.getElementById('chatFrame');
+                iframe.src = iframe.src;
+            } else if (tabName === 'support') {
+                document.getElementById('supportTab').classList.add('active');
+            } else if (tabName === 'companies') {
+                document.getElementById('companiesTab').classList.add('active');
+                carregarEmpreses();
+            } else if (tabName === 'profile') {
+                document.getElementById('profileTab').classList.add('active');
+            }
         }
 
         function switchTab(tabName) {
+            // Save active tab to localStorage
+            localStorage.setItem('activeTab', tabName);
+
             // Remove active class from all tabs
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.classList.remove('active');
@@ -216,6 +274,9 @@
                 document.getElementById('homeTab').classList.add('active');
             } else if (tabName === 'chat') {
                 document.getElementById('chatTab').classList.add('active');
+                // Reload iframe to ensure it has the current token
+                const iframe = document.getElementById('chatFrame');
+                iframe.src = iframe.src;
             } else if (tabName === 'support') {
                 document.getElementById('supportTab').classList.add('active');
             } else if (tabName === 'companies') {
@@ -225,6 +286,8 @@
                 document.getElementById('profileTab').classList.add('active');
             }
         }
+
+        let totesLesEmpreses = [];
 
         async function carregarEmpreses() {
             const container = document.getElementById('empresesContainer');
@@ -236,24 +299,48 @@
                     }
                 });
                 const empreses = await response.json();
+                totesLesEmpreses = empreses;
 
-                if (empreses.length === 0) {
-                    container.innerHTML = '<p>No hi ha empreses registrades.</p>';
-                    return;
-                }
-
-                container.innerHTML = empreses.map(empresa => `
-                    <div class="empresa-item">
-                        ${empresa.logo ? `<img src="${empresa.logo_url}" alt="${empresa.title}" style="margin-bottom:15px;">` : ''}
-                        <h3>${empresa.title}</h3>
-                        <p>${empresa.description || ''}</p>
-                        ${empresa.location ? `<p>${empresa.location}</p>` : ''}
-                    </div>
-                `).join('');
+                mostrarEmpreses(empreses);
             } catch (error) {
                 console.error('Error carregant empreses:', error);
                 container.innerHTML = '<p>Error carregant les empreses.</p>';
             }
+        }
+
+        function mostrarEmpreses(empreses) {
+            const container = document.getElementById('empresesContainer');
+
+            if (empreses.length === 0) {
+                container.innerHTML = '<p>No s\'han trobat empreses.</p>';
+                return;
+            }
+
+            container.innerHTML = empreses.map(empresa => `
+                <div class="empresa-item">
+                    ${empresa.logo ? `<img src="${empresa.logo_url}" alt="${empresa.title}" style="margin-bottom:15px;">` : ''}
+                    <h3>${empresa.title}</h3>
+                    <p>${empresa.description || ''}</p>
+                    ${empresa.location ? `<p>${empresa.location}</p>` : ''}
+                    <button class="detalls-empresa">Veure Detalls</button>
+                </div>
+            `).join('');
+        }
+
+        function filtrarEmpreses() {
+            const searchText = document.getElementById('searchEmpreses').value.toLowerCase();
+
+            const empresesFiltrades = totesLesEmpreses.filter(empresa => {
+                const title = (empresa.title || '').toLowerCase();
+                const description = (empresa.description || '').toLowerCase();
+                const location = (empresa.location || '').toLowerCase();
+
+                return title.includes(searchText) ||
+                       description.includes(searchText) ||
+                       location.includes(searchText);
+            });
+
+            mostrarEmpreses(empresesFiltrades);
         }
 
         function logout() {

@@ -412,13 +412,54 @@ button:hover {
 }
 
 /* Empreses */
+.search-container {
+    background: white;
+    padding: 25px 30px;
+    border-radius: 2px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    margin-bottom: 30px;
+}
+
+.search-container input {
+    width: 100%;
+    padding: 16px 20px;
+    border: 1px solid #d1d5db;
+    border-radius: 2px;
+    font-size: 14px;
+    transition: all 0.3s;
+    background: #f9fafb;
+}
+
+.search-container input:focus {
+    outline: none;
+    border-color: #1f2937;
+    background: white;
+}
+
+.search-container input::placeholder {
+    color: #9ca3af;
+}
+
 #empresesContainer {
     display: flex;
     flex-direction: column;
 }
 
 .empresa-item {
-    padding: 10px 0;
+    padding: 10px;
+    border-radius: 7px;
+    background-color: #bdd1f4;
+    p {
+        margin-top: 7px;
+    }
+
+    .detalls-empresa{
+        margin-top: 1rem;
+        padding: 10px;
+        background-color: #5eb2e7;
+        max-width: 10rem;
+        border-radius: 9px;
+    }
 }
 
 .development-badge {
