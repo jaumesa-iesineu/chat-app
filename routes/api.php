@@ -17,6 +17,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //empreses
     Route::get('/empreses', [EmpresaController::class, 'llistar_empreses']);
+    Route::get('/empreses/{id}', [EmpresaController::class, 'obtenir_detalls']);
 
     // Chat
     Route::get('/conversations', [ChatController::class, 'conversations']);

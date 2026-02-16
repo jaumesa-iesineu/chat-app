@@ -167,7 +167,7 @@
                                     type="text"
                                     id="searchEmpreses"
                                     class="form-control border-start-0 bg-light"
-                                    placeholder="Cerca empreses per nom, descripció o ubicació..."
+                                    placeholder="Cerca empreses per nom, descripció, ubicació o any..."
                                     oninput="filtrarEmpreses()"
                                 >
                             </div>
@@ -362,7 +362,7 @@
                             ${empresa.location ? `<p class="card-text text-muted small mb-3"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-geo-alt-fill me-1" viewBox="0 0 16 16"><path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/></svg>${empresa.location}</p>` : ''}
                         </div>
                         <div class="card-footer bg-white border-0 pt-0 pb-3 px-3">
-                            <button class="btn btn-primary w-100">Veure Detalls</button>
+                            <a href="empresa-detalls.html?id=${empresa.id}" class="btn btn-primary w-100">Veure Detalls</a>
                         </div>
                     </div>
                 </div>
@@ -376,10 +376,12 @@
                 const title = (empresa.title || '').toLowerCase();
                 const description = (empresa.description || '').toLowerCase();
                 const location = (empresa.location || '').toLowerCase();
+                const year = empresa.created_at ? new Date(empresa.created_at).getFullYear().toString() : '';
 
                 return title.includes(searchText) ||
                        description.includes(searchText) ||
-                       location.includes(searchText);
+                       location.includes(searchText) ||
+                       year.includes(searchText);
             });
 
             mostrarEmpreses(empresesFiltrades);
