@@ -45,6 +45,65 @@
         </div>
     </div>
 
+    <!-- Toast Container -->
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+        <div id="notificationToast" class="toast align-items-center border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body fw-semibold">
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal per editar jornada -->
+    <div class="modal fade" id="editarJornadaModal" tabindex="-1" aria-labelledby="editarJornadaModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-bottom">
+                    <h5 class="modal-title text-dark text-uppercase fw-semibold" id="editarJornadaModalLabel" style="letter-spacing: 0.5px;">Editar jornada</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <input type="hidden" id="editJornadaId">
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold small text-uppercase text-muted" style="letter-spacing: 0.5px;">Data</label>
+                        <input type="text" class="form-control" id="editDataJornada" readonly>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-6">
+                            <label class="form-label fw-semibold small text-uppercase text-muted" style="letter-spacing: 0.5px;">Entrada</label>
+                            <input type="text" class="form-control" id="editHoraEntrada" readonly>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label fw-semibold small text-uppercase text-muted" style="letter-spacing: 0.5px;">Sortida</label>
+                            <div class="input-group">
+                                <input type="time" class="form-control" id="editHoraSortida">
+                                <button type="button" class="btn btn-outline-secondary" onclick="setHoraActual('editHoraSortida')" title="Hora actual">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clock" viewBox="0 0 16 16">
+                                        <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
+                                        <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="editActivitatsTextarea" class="form-label fw-semibold small text-uppercase text-muted" style="letter-spacing: 0.5px;">Activitats realitzades (RAs)</label>
+                        <textarea class="form-control" id="editActivitatsTextarea" rows="5" placeholder="Descriu les activitats i resultats d'aprenentatge realitzats durant la jornada..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer border-top">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel·lar</button>
+                    <button type="button" class="btn btn-dark" onclick="guardarEdicio()">Guardar canvis</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="dashboard" class="d-flex flex-column vh-100" style="display: none !important;">
         <nav class="navbar navbar-dark gov-header">
             <div class="container-fluid px-3 px-md-4 px-lg-5">
@@ -148,15 +207,14 @@
                             <div class="card-body p-4 p-md-5">
                                 <h2 class="fs-5 text-dark text-uppercase fw-semibold pb-3 mb-4 border-bottom" style="letter-spacing: 0.5px;">Registrar jornada</h2>
 
-                                <div class="row g-3 mb-4">
-                                    <div class="col-12 col-md-6">
-                                        <label for="dataJornada" class="form-label fw-semibold">Data</label>
-                                        <input type="date" class="form-control form-control-lg" id="dataJornada" required>
+                                <div class="row g-3 mb-3">
+                                    <div class="col-12 col-md-4">
+                                        <label for="dataJornada" class="form-label fw-semibold small text-uppercase text-muted" style="letter-spacing: 0.5px;">Data</label>
+                                        <input type="date" class="form-control" id="dataJornada" required>
                                     </div>
-                                    <div class="col-12 col-md-6"></div>
-                                    <div class="col-12 col-md-6">
-                                        <label for="horaEntradaManual" class="form-label fw-semibold">Hora d'entrada</label>
-                                        <div class="input-group input-group-lg">
+                                    <div class="col-12 col-md-4">
+                                        <label for="horaEntradaManual" class="form-label fw-semibold small text-uppercase text-muted" style="letter-spacing: 0.5px;">Hora d'entrada</label>
+                                        <div class="input-group">
                                             <input type="time" class="form-control" id="horaEntradaManual" required>
                                             <button type="button" class="btn btn-outline-secondary" onclick="setHoraActual('horaEntradaManual')" title="Hora actual">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clock" viewBox="0 0 16 16">
@@ -166,9 +224,9 @@
                                             </button>
                                         </div>
                                     </div>
-                                    <div class="col-12 col-md-6">
-                                        <label for="horaSortidaManual" class="form-label fw-semibold">Hora de sortida</label>
-                                        <div class="input-group input-group-lg">
+                                    <div class="col-12 col-md-4">
+                                        <label for="horaSortidaManual" class="form-label fw-semibold small text-uppercase text-muted" style="letter-spacing: 0.5px;">Hora de sortida</label>
+                                        <div class="input-group">
                                             <input type="time" class="form-control" id="horaSortidaManual">
                                             <button type="button" class="btn btn-outline-secondary" onclick="setHoraActual('horaSortidaManual')" title="Hora actual">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clock" viewBox="0 0 16 16">
@@ -180,17 +238,15 @@
                                     </div>
                                 </div>
 
-                                <div class="row g-3 mb-4">
-                                    <div class="col-12">
-                                        <button type="button" class="btn btn-success btn-lg w-100" id="btnGuardarJornada" onclick="guardarJornada()">
-                                            Guardar jornada
-                                        </button>
-                                    </div>
+                                <div class="mb-4">
+                                    <label for="activitatsTextarea" class="form-label fw-semibold small text-uppercase text-muted" style="letter-spacing: 0.5px;">Activitats realitzades (RAs)</label>
+                                    <textarea class="form-control" id="activitatsTextarea" rows="4" placeholder="Descriu les activitats i resultats d'aprenentatge realitzats durant la jornada..."></textarea>
                                 </div>
 
-                                <div class="mb-3">
-                                    <label for="activitatsTextarea" class="form-label fw-semibold">Activitats realitzades (RAs)</label>
-                                    <textarea class="form-control" id="activitatsTextarea" rows="5" placeholder="Descriu les activitats i resultats d'aprenentatge realitzats durant la jornada..."></textarea>
+                                <div class="d-grid">
+                                    <button type="button" class="btn btn-dark btn-lg text-uppercase fw-semibold" style="letter-spacing: 0.5px;" id="btnGuardarJornada" onclick="guardarJornada()">
+                                        Guardar jornada
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -198,7 +254,7 @@
                         <div class="card gov-card shadow-sm border-0">
                             <div class="card-body p-4 p-md-5">
                                 <h2 class="fs-5 text-dark text-uppercase fw-semibold pb-3 mb-4 border-bottom" style="letter-spacing: 0.5px;">Les meves jornades</h2>
-                                <div id="llistatJornades">
+                                <div id="llistatJornades" style="max-height: 500px; overflow-y: auto;">
                                     <p class="text-center text-muted">Carregant jornades...</p>
                                 </div>
                             </div>
@@ -270,6 +326,32 @@
         let token = localStorage.getItem('token');
         let currentUser = null;
 
+        // Funcions per mostrar notificacions toast
+        function showToast(message, type = 'success') {
+            const toastEl = document.getElementById('notificationToast');
+            const toastBody = toastEl.querySelector('.toast-body');
+
+            // Configurar colors segons el tipus
+            toastEl.className = 'toast align-items-center border-0';
+            if (type === 'success') {
+                toastEl.classList.add('bg-success', 'text-white');
+            } else if (type === 'error') {
+                toastEl.classList.add('bg-danger', 'text-white');
+            } else if (type === 'warning') {
+                toastEl.classList.add('bg-warning', 'text-dark');
+            } else if (type === 'info') {
+                toastEl.classList.add('bg-info', 'text-white');
+            }
+
+            toastBody.textContent = message;
+
+            const toast = new bootstrap.Toast(toastEl, {
+                autohide: true,
+                delay: 3000
+            });
+            toast.show();
+        }
+
         if (token) {
             checkAuth();
         } else {
@@ -297,11 +379,11 @@
                     localStorage.setItem('user', JSON.stringify(currentUser));
                     showDashboard();
                 } else {
-                    alert('Error al iniciar sessió');
+                    showToast('Error al iniciar sessió', 'error');
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Error de connexió');
+                showToast('Error de connexió', 'error');
             }
         }
 
@@ -505,7 +587,7 @@
             const activitats = document.getElementById('activitatsTextarea').value.trim();
 
             if (!data || !horaEntrada) {
-                alert('Has d\'introduir almenys la data i l\'hora d\'entrada');
+                showToast('Has d\'introduir almenys la data i l\'hora d\'entrada', 'warning');
                 return;
             }
 
@@ -528,7 +610,7 @@
                 const result = await response.json();
 
                 if (response.ok) {
-                    alert('Jornada guardada correctament');
+                    showToast('Jornada guardada correctament', 'success');
 
                     // Netejar formulari
                     document.getElementById('horaEntradaManual').value = '';
@@ -541,11 +623,11 @@
 
                     carregarJornades();
                 } else {
-                    alert(result.error || 'Error en guardar la jornada');
+                    showToast(result.error || 'Error en guardar la jornada', 'error');
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Error de connexió');
+                showToast('Error de connexió', 'error');
             }
         }
 
@@ -593,27 +675,40 @@
                                 const activitats = jornada.activitats ? jornada.activitats.substring(0, 50) + (jornada.activitats.length > 50 ? '...' : '') : '-';
                                 let estat = '';
                                 let estatClass = '';
+                                let needsEdit = false;
 
                                 if (!jornada.hora_sortida) {
-                                    estat = 'Sense sortida';
+                                    estat = '⚠️ Sense sortida';
                                     estatClass = 'badge bg-warning text-dark';
+                                    needsEdit = true;
                                 } else if (!jornada.activitats || jornada.activitats.trim() === '') {
-                                    estat = 'Sense activitats';
-                                    estatClass = 'badge bg-info';
+                                    estat = '⚠️ Sense activitats';
+                                    estatClass = 'badge bg-info text-white';
+                                    needsEdit = true;
                                 } else {
-                                    estat = 'Completada';
+                                    estat = '✓ Completada';
                                     estatClass = 'badge bg-success';
                                 }
 
                                 return `
-                                    <tr>
-                                        <td>${dataFormatada}</td>
+                                    <tr ${needsEdit ? 'class="table-warning"' : ''}>
+                                        <td class="fw-semibold">${dataFormatada}</td>
                                         <td>${jornada.hora_entrada}</td>
-                                        <td>${jornada.hora_sortida || '-'}</td>
+                                        <td>${jornada.hora_sortida || '<span class="text-muted">-</span>'}</td>
                                         <td><small>${activitats}</small></td>
                                         <td><span class="${estatClass}">${estat}</span></td>
                                         <td>
-                                            <button class="btn btn-sm btn-danger" onclick="eliminarJornada(${jornada.id})">Eliminar</button>
+                                            <button class="btn btn-sm btn-outline-primary me-1" onclick='editarJornada(${JSON.stringify(jornada)})' title="Editar">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                                                    <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+                                                </svg>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger" onclick="eliminarJornada(${jornada.id})" title="Eliminar">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"/>
+                                                    <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"/>
+                                                </svg>
+                                            </button>
                                         </td>
                                     </tr>
                                 `;
@@ -622,6 +717,58 @@
                     </table>
                 </div>
             `;
+        }
+
+        function editarJornada(jornada) {
+            // Omplir el modal amb les dades de la jornada
+            document.getElementById('editJornadaId').value = jornada.id;
+            document.getElementById('editDataJornada').value = new Date(jornada.data).toLocaleDateString('ca-ES');
+            document.getElementById('editHoraEntrada').value = jornada.hora_entrada;
+            document.getElementById('editHoraSortida').value = jornada.hora_sortida ? jornada.hora_sortida.substring(0, 5) : '';
+            document.getElementById('editActivitatsTextarea').value = jornada.activitats || '';
+
+            // Mostrar el modal
+            const modal = new bootstrap.Modal(document.getElementById('editarJornadaModal'));
+            modal.show();
+        }
+
+        async function guardarEdicio() {
+            const id = document.getElementById('editJornadaId').value;
+            const horaSortida = document.getElementById('editHoraSortida').value;
+            const activitats = document.getElementById('editActivitatsTextarea').value.trim();
+
+            try {
+                const response = await fetch(`${API_URL}/jornades/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        hora_sortida: horaSortida ? horaSortida + ':00' : null,
+                        activitats: activitats || null
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showToast('Jornada actualitzada correctament', 'success');
+
+                    // Tancar el modal
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('editarJornadaModal'));
+                    modal.hide();
+
+                    // Recarregar jornades
+                    carregarJornades();
+                } else {
+                    showToast(result.error || 'Error en actualitzar la jornada', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Error de connexió', 'error');
+            }
         }
 
         async function eliminarJornada(id) {
@@ -639,13 +786,14 @@
                 });
 
                 if (response.ok) {
+                    showToast('Jornada eliminada correctament', 'success');
                     carregarJornades();
                 } else {
-                    alert('Error en eliminar la jornada');
+                    showToast('Error en eliminar la jornada', 'error');
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Error de connexió');
+                showToast('Error de connexió', 'error');
             }
         }
     </script>

@@ -28,30 +28,32 @@ class AssistenciaController extends Controller
             ], 403);
         }
 
-        // Verificar que no hi hagi cap jornada activa (sense hora_sortida)
-        $jornadaActiva = Jornada::where('user_id', $request->user()->id)
-            ->whereNull('hora_sortida')
-            ->first();
-
-        if ($jornadaActiva) {
-            return response()->json([
-                'error' => 'Ja tens una jornada activa. Marca primer la sortida.'
-            ], 400);
-        }
-
         $validator = Validator::make($request->all(), [
             'data' => 'required|date',
             'hora_entrada' => 'required|date_format:H:i:s',
+            'hora_sortida' => 'nullable|date_format:H:i:s',
+            'activitats' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
+        // Validar que hora_sortida sigui posterior a hora_entrada
+        if ($request->has('hora_sortida') && $request->hora_sortida) {
+            if ($request->hora_sortida <= $request->hora_entrada) {
+                return response()->json([
+                    'error' => 'L\'hora de sortida ha de ser posterior a l\'hora d\'entrada'
+                ], 400);
+            }
+        }
+
         $jornada = Jornada::create([
             'user_id' => $request->user()->id,
             'data' => $request->data,
             'hora_entrada' => $request->hora_entrada,
+            'hora_sortida' => $request->hora_sortida,
+            'activitats' => $request->activitats,
         ]);
 
         return response()->json($jornada, 201);
