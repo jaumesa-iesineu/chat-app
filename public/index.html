@@ -98,9 +98,24 @@
 
                     <div class="mb-1">
                         <label class="form-label fw-semibold small text-uppercase text-muted" style="letter-spacing: 0.5px;">RA vistos a la jornada</label>
+                        <div class="input-group mb-2">
+                            <span class="input-group-text bg-white border-end-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search text-muted" viewBox="0 0 16 16">
+                                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                                </svg>
+                            </span>
+                            <input
+                                type="text"
+                                id="editSearchRaJornada"
+                                class="form-control border-start-0"
+                                placeholder="Cerca RA's per text, mòdul o codi..."
+                                oninput="filtrarRaCheckboxes('editSearchRaJornada', 'editRaCheckboxesContainer', 'editRaSearchNoResults')"
+                            >
+                        </div>
                         <div id="editRaCheckboxesContainer" class="border rounded p-3 bg-light" style="max-height: 220px; overflow-y: auto;">
                             <p class="text-center text-muted mb-0">Carregant RA's...</p>
                         </div>
+                        <small id="editRaSearchNoResults" class="text-muted d-none mt-1">No s'han trobat RA's amb aquest filtre.</small>
                         <small id="editRaSelectionInfo" class="text-muted d-block mt-2">0 RA seleccionats</small>
                     </div>
                 </div>
@@ -204,7 +219,7 @@
                 <iframe id="chatFrame" src="/chat.html" class="w-100 h-100 border-0"></iframe>
             </div>
 
-            <div class="tab-pane fade overflow-auto" id="supportTab" role="tabpanel" aria-labelledby="support-tab">
+            <div class="tab-pane fade overflow-auto h-100" id="supportTab" role="tabpanel" aria-labelledby="support-tab">
                 <div class="container-fluid p-3 p-md-4 p-lg-5">
                     <div class="card gov-card shadow-sm border-0 mb-4">
                         <div class="card-body p-4 p-md-5">
@@ -256,9 +271,24 @@
 
                                 <div class="mb-4">
                                     <label class="form-label fw-semibold small text-uppercase text-muted" style="letter-spacing: 0.5px;">RA vistos a la jornada</label>
+                                    <div class="input-group mb-2">
+                                        <span class="input-group-text bg-white border-end-0">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search text-muted" viewBox="0 0 16 16">
+                                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                                            </svg>
+                                        </span>
+                                        <input
+                                            type="text"
+                                            id="searchRaJornada"
+                                            class="form-control border-start-0"
+                                            placeholder="Cerca RA's per text, mòdul o codi..."
+                                            oninput="filtrarRaCheckboxes('searchRaJornada', 'raCheckboxesContainer', 'raSearchNoResults')"
+                                        >
+                                    </div>
                                     <div id="raCheckboxesContainer" class="border rounded p-3 bg-light" style="max-height: 260px; overflow-y: auto;">
                                         <p class="text-center text-muted mb-0">Carregant RA's...</p>
                                     </div>
+                                    <small id="raSearchNoResults" class="text-muted d-none mt-1">No s'han trobat RA's amb aquest filtre.</small>
                                     <small id="raSelectionInfo" class="text-muted d-block mt-2">0 RA seleccionats</small>
                                 </div>
 
@@ -714,15 +744,16 @@
             }
 
             container.innerHTML = totsElsModuls.map(modul => `
-                <div class="mb-3">
+                <div class="mb-3 ra-module-group">
                     <div class="small text-uppercase fw-semibold text-muted mb-2" style="letter-spacing: 0.4px;">
                         ${escapeHtml(modul.codi)} · ${escapeHtml(modul.modul)}
                     </div>
                     ${modul.ras.map(ra => {
                         const checked = selectedSet.has(Number(ra.id)) ? 'checked' : '';
                         const checkboxId = `${containerId}-ra-${ra.id}`;
+                        const raSearch = `${ra.ra} ${(ra.descripcio || '')} ${modul.modul} ${modul.codi}`.toLowerCase();
                         return `
-                            <div class="form-check mb-2">
+                            <div class="form-check mb-2 ra-option" data-ra-search="${escapeHtml(raSearch)}">
                                 <input class="form-check-input" type="checkbox" value="${ra.id}" id="${checkboxId}" ${checked}
                                     onchange="actualitzarComptadorRa('${containerId}', '${infoId || ''}')">
                                 <label class="form-check-label small text-dark" for="${checkboxId}">
@@ -737,6 +768,42 @@
 
             if (infoId) {
                 actualitzarComptadorRa(containerId, infoId);
+            }
+        }
+
+        function filtrarRaCheckboxes(searchInputId, containerId, noResultsId = null) {
+            const searchInput = document.getElementById(searchInputId);
+            const container = document.getElementById(containerId);
+            const noResults = noResultsId ? document.getElementById(noResultsId) : null;
+
+            if (!searchInput || !container) {
+                return;
+            }
+
+            const searchText = searchInput.value.trim().toLowerCase();
+            let hiHaOpcionsVisibles = false;
+
+            container.querySelectorAll('.ra-module-group').forEach((moduleGroup) => {
+                let opcionsVisiblesDelModul = 0;
+
+                moduleGroup.querySelectorAll('.ra-option').forEach((option) => {
+                    const searchableText = option.getAttribute('data-ra-search') || '';
+                    const visible = searchText === '' || searchableText.includes(searchText);
+
+                    option.classList.toggle('d-none', !visible);
+                    if (visible) {
+                        opcionsVisiblesDelModul += 1;
+                    }
+                });
+
+                moduleGroup.classList.toggle('d-none', opcionsVisiblesDelModul === 0);
+                if (opcionsVisiblesDelModul > 0) {
+                    hiHaOpcionsVisibles = true;
+                }
+            });
+
+            if (noResults) {
+                noResults.classList.toggle('d-none', hiHaOpcionsVisibles || searchText === '');
             }
         }
 
@@ -798,6 +865,11 @@
             try {
                 await obtenirModulsRas();
                 renderRaCheckboxes('raCheckboxesContainer', [], 'raSelectionInfo');
+                const searchInput = document.getElementById('searchRaJornada');
+                if (searchInput) {
+                    searchInput.value = '';
+                }
+                filtrarRaCheckboxes('searchRaJornada', 'raCheckboxesContainer', 'raSearchNoResults');
             } catch (error) {
                 console.error('Error carregant RA per assistència:', error);
                 container.innerHTML = '<p class="text-center text-danger mb-0">No s\'han pogut carregar els RA.</p>';
@@ -868,6 +940,11 @@
                     document.getElementById('horaSortidaManual').value = '';
                     document.getElementById('activitatsTextarea').value = '';
                     netejarSeleccioRa('raCheckboxesContainer', 'raSelectionInfo');
+                    const searchInput = document.getElementById('searchRaJornada');
+                    if (searchInput) {
+                        searchInput.value = '';
+                    }
+                    filtrarRaCheckboxes('searchRaJornada', 'raCheckboxesContainer', 'raSearchNoResults');
 
                     const avui = new Date().toISOString().split('T')[0];
                     document.getElementById('dataJornada').value = avui;
@@ -927,7 +1004,8 @@
                                 const dataFormatada = new Date(jornada.data).toLocaleDateString('ca-ES');
                                 const activitats = jornada.activitats ? jornada.activitats.substring(0, 50) + (jornada.activitats.length > 50 ? '...' : '') : '-';
                                 const totalRas = Array.isArray(jornada.ras) ? jornada.ras.length : 0;
-                                const teActivitats = jornada.activitats && jornada.activitats.trim() !== '';
+                                const teDescripcio = jornada.activitats && jornada.activitats.trim() !== '';
+                                const teRas = totalRas > 0;
                                 let estat = '';
                                 let estatClass = '';
                                 let needsEdit = false;
@@ -936,13 +1014,21 @@
                                     estat = '⚠️ Sense sortida';
                                     estatClass = 'badge bg-warning text-dark';
                                     needsEdit = true;
-                                } else if (!teActivitats && totalRas === 0) {
-                                    estat = '⚠️ Sense activitats ni RA';
+                                } else if (teDescripcio && teRas) {
+                                    estat = '✓ Completada';
+                                    estatClass = 'badge bg-success';
+                                } else if (!teDescripcio && !teRas) {
+                                    estat = '⚠️ Falten RA i descripció';
+                                    estatClass = 'badge bg-info text-white';
+                                    needsEdit = true;
+                                } else if (!teRas) {
+                                    estat = '⚠️ Falten RA';
                                     estatClass = 'badge bg-info text-white';
                                     needsEdit = true;
                                 } else {
-                                    estat = '✓ Completada';
-                                    estatClass = 'badge bg-success';
+                                    estat = '⚠️ Falta descripció';
+                                    estatClass = 'badge bg-info text-white';
+                                    needsEdit = true;
                                 }
 
                                 return `
@@ -997,6 +1083,11 @@
 
             const selectedRaIds = Array.isArray(jornada.ras) ? jornada.ras.map(ra => ra.id) : [];
             renderRaCheckboxes('editRaCheckboxesContainer', selectedRaIds, 'editRaSelectionInfo');
+            const searchInput = document.getElementById('editSearchRaJornada');
+            if (searchInput) {
+                searchInput.value = '';
+            }
+            filtrarRaCheckboxes('editSearchRaJornada', 'editRaCheckboxesContainer', 'editRaSearchNoResults');
 
             const modal = new bootstrap.Modal(document.getElementById('editarJornadaModal'));
             modal.show();
