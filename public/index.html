@@ -92,8 +92,16 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="editActivitatsTextarea" class="form-label fw-semibold small text-uppercase text-muted" style="letter-spacing: 0.5px;">Activitats realitzades (RAs)</label>
-                        <textarea class="form-control" id="editActivitatsTextarea" rows="5" placeholder="Descriu les activitats i resultats d'aprenentatge realitzats durant la jornada..."></textarea>
+                        <label for="editActivitatsTextarea" class="form-label fw-semibold small text-uppercase text-muted" style="letter-spacing: 0.5px;">Activitats realitzades</label>
+                        <textarea class="form-control" id="editActivitatsTextarea" rows="5" placeholder="Descriu les activitats realitzades durant la jornada..."></textarea>
+                    </div>
+
+                    <div class="mb-1">
+                        <label class="form-label fw-semibold small text-uppercase text-muted" style="letter-spacing: 0.5px;">RA vistos a la jornada</label>
+                        <div id="editRaCheckboxesContainer" class="border rounded p-3 bg-light" style="max-height: 220px; overflow-y: auto;">
+                            <p class="text-center text-muted mb-0">Carregant RA's...</p>
+                        </div>
+                        <small id="editRaSelectionInfo" class="text-muted d-block mt-2">0 RA seleccionats</small>
                     </div>
                 </div>
                 <div class="modal-footer border-top">
@@ -241,9 +249,17 @@
                                     </div>
                                 </div>
 
+                                <div class="mb-3">
+                                    <label for="activitatsTextarea" class="form-label fw-semibold small text-uppercase text-muted" style="letter-spacing: 0.5px;">Activitats realitzades</label>
+                                    <textarea class="form-control" id="activitatsTextarea" rows="4" placeholder="Descriu les activitats realitzades durant la jornada..."></textarea>
+                                </div>
+
                                 <div class="mb-4">
-                                    <label for="activitatsTextarea" class="form-label fw-semibold small text-uppercase text-muted" style="letter-spacing: 0.5px;">Activitats realitzades (RAs)</label>
-                                    <textarea class="form-control" id="activitatsTextarea" rows="4" placeholder="Descriu les activitats i resultats d'aprenentatge realitzats durant la jornada..."></textarea>
+                                    <label class="form-label fw-semibold small text-uppercase text-muted" style="letter-spacing: 0.5px;">RA vistos a la jornada</label>
+                                    <div id="raCheckboxesContainer" class="border rounded p-3 bg-light" style="max-height: 260px; overflow-y: auto;">
+                                        <p class="text-center text-muted mb-0">Carregant RA's...</p>
+                                    </div>
+                                    <small id="raSelectionInfo" class="text-muted d-block mt-2">0 RA seleccionats</small>
                                 </div>
 
                                 <div class="d-grid">
@@ -593,19 +609,43 @@
         }
 
         let totsElsModuls = [];
+        let jornadesActuals = [];
+
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        async function obtenirModulsRas() {
+            if (totsElsModuls.length > 0) {
+                return totsElsModuls;
+            }
+
+            const response = await fetch(`${API_URL}/ras`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('No s\'ha pogut carregar el catàleg de RA');
+            }
+
+            const moduls = await response.json();
+            totsElsModuls = Array.isArray(moduls) ? moduls : [];
+            return totsElsModuls;
+        }
 
         async function carregarRas() {
             const container = document.getElementById('rasContainer');
             container.innerHTML = '<p class="text-center text-muted">Carregant RA\'s...</p>';
             try {
-                const response = await fetch(`${API_URL}/ras`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/json'
-                    }
-                });
-                const moduls = await response.json();
-                totsElsModuls = moduls;
+                const moduls = await obtenirModulsRas();
                 mostrarRas(moduls);
             } catch (error) {
                 console.error('Error carregant RA\'s:', error);
@@ -624,14 +664,14 @@
             container.innerHTML = moduls.map(modul => `
                 <div class="card shadow-sm border-0 mb-3">
                     <div class="card-header bg-white border-bottom py-3">
-                        <span class="badge bg-primary me-2">${modul.codi}</span>
-                        <span class="fw-semibold text-dark">${modul.modul}</span>
+                        <span class="badge bg-primary me-2">${escapeHtml(modul.codi)}</span>
+                        <span class="fw-semibold text-dark">${escapeHtml(modul.modul)}</span>
                     </div>
                     <ul class="list-group list-group-flush">
                         ${modul.ras.map(ra => `
                             <li class="list-group-item px-4 py-3">
-                                <p class="mb-0 text-dark">${ra.ra}</p>
-                                ${ra.descripcio ? `<p class="mb-0 mt-1 small text-muted">${ra.descripcio}</p>` : ''}
+                                <p class="mb-0 text-dark">${escapeHtml(ra.ra)}</p>
+                                ${ra.descripcio ? `<p class="mb-0 mt-1 small text-muted">${escapeHtml(ra.descripcio)}</p>` : ''}
                             </li>
                         `).join('')}
                     </ul>
@@ -657,6 +697,85 @@
             mostrarRas(modulsFiltrats);
         }
 
+        function renderRaCheckboxes(containerId, selectedRaIds = [], infoId = null) {
+            const container = document.getElementById(containerId);
+            if (!container) {
+                return;
+            }
+
+            const selectedSet = new Set(selectedRaIds.map(id => Number(id)));
+
+            if (totsElsModuls.length === 0) {
+                container.innerHTML = '<p class="text-center text-muted mb-0">No hi ha RA disponibles.</p>';
+                if (infoId) {
+                    actualitzarComptadorRa(containerId, infoId);
+                }
+                return;
+            }
+
+            container.innerHTML = totsElsModuls.map(modul => `
+                <div class="mb-3">
+                    <div class="small text-uppercase fw-semibold text-muted mb-2" style="letter-spacing: 0.4px;">
+                        ${escapeHtml(modul.codi)} · ${escapeHtml(modul.modul)}
+                    </div>
+                    ${modul.ras.map(ra => {
+                        const checked = selectedSet.has(Number(ra.id)) ? 'checked' : '';
+                        const checkboxId = `${containerId}-ra-${ra.id}`;
+                        return `
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" value="${ra.id}" id="${checkboxId}" ${checked}
+                                    onchange="actualitzarComptadorRa('${containerId}', '${infoId || ''}')">
+                                <label class="form-check-label small text-dark" for="${checkboxId}">
+                                    ${escapeHtml(ra.ra)}
+                                </label>
+                                ${ra.descripcio ? `<div class="small text-muted ms-4">${escapeHtml(ra.descripcio)}</div>` : ''}
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `).join('');
+
+            if (infoId) {
+                actualitzarComptadorRa(containerId, infoId);
+            }
+        }
+
+        function obtenirRaSeleccionats(containerId) {
+            const container = document.getElementById(containerId);
+            if (!container) {
+                return [];
+            }
+
+            return Array.from(container.querySelectorAll('input.form-check-input:checked'))
+                .map(input => Number(input.value));
+        }
+
+        function actualitzarComptadorRa(containerId, infoId) {
+            if (!infoId) {
+                return;
+            }
+
+            const infoElement = document.getElementById(infoId);
+            if (!infoElement) {
+                return;
+            }
+
+            const total = obtenirRaSeleccionats(containerId).length;
+            infoElement.textContent = `${total} RA seleccionat${total === 1 ? '' : 's'}`;
+        }
+
+        function netejarSeleccioRa(containerId, infoId) {
+            const container = document.getElementById(containerId);
+            if (!container) {
+                return;
+            }
+
+            container.querySelectorAll('input.form-check-input:checked').forEach((checkbox) => {
+                checkbox.checked = false;
+            });
+            actualitzarComptadorRa(containerId, infoId);
+        }
+
         function logout() {
             localStorage.removeItem('token');
             localStorage.removeItem('user');
@@ -668,17 +787,36 @@
             document.getElementById('dashboard').classList.add('d-none');
         }
 
+        async function carregarRasAssistencia() {
+            const container = document.getElementById('raCheckboxesContainer');
+            if (!container) {
+                return;
+            }
+
+            container.innerHTML = '<p class="text-center text-muted mb-0">Carregant RA\'s...</p>';
+
+            try {
+                await obtenirModulsRas();
+                renderRaCheckboxes('raCheckboxesContainer', [], 'raSelectionInfo');
+            } catch (error) {
+                console.error('Error carregant RA per assistència:', error);
+                container.innerHTML = '<p class="text-center text-danger mb-0">No s\'han pogut carregar els RA.</p>';
+            }
+        }
+
         // Comprovar si l'usuari és alumne i mostrar/amagar contingut
-        function checkAssistenciaAccess() {
+        async function checkAssistenciaAccess() {
             if (currentUser && currentUser.role === 'alumne') {
                 document.getElementById('alumneAssistenciaContent').style.display = 'block';
                 document.getElementById('noAlumneMessage').style.display = 'none';
 
-                // Establir data actual
                 const avui = new Date().toISOString().split('T')[0];
                 document.getElementById('dataJornada').value = avui;
 
-                carregarJornades();
+                await Promise.all([
+                    carregarRasAssistencia(),
+                    carregarJornades()
+                ]);
             } else {
                 document.getElementById('alumneAssistenciaContent').style.display = 'none';
                 document.getElementById('noAlumneMessage').style.display = 'block';
@@ -697,6 +835,7 @@
             const horaEntrada = document.getElementById('horaEntradaManual').value;
             const horaSortida = document.getElementById('horaSortidaManual').value;
             const activitats = document.getElementById('activitatsTextarea').value.trim();
+            const raIds = obtenirRaSeleccionats('raCheckboxesContainer');
 
             if (!data || !horaEntrada) {
                 showToast('Has d\'introduir almenys la data i l\'hora d\'entrada', 'warning');
@@ -715,7 +854,8 @@
                         data: data,
                         hora_entrada: horaEntrada + ':00',
                         hora_sortida: horaSortida ? horaSortida + ':00' : null,
-                        activitats: activitats || null
+                        activitats: activitats || null,
+                        ra_ids: raIds
                     })
                 });
 
@@ -724,12 +864,11 @@
                 if (response.ok) {
                     showToast('Jornada guardada correctament', 'success');
 
-                    // Netejar formulari
                     document.getElementById('horaEntradaManual').value = '';
                     document.getElementById('horaSortidaManual').value = '';
                     document.getElementById('activitatsTextarea').value = '';
+                    netejarSeleccioRa('raCheckboxesContainer', 'raSelectionInfo');
 
-                    // Establir data actual novament
                     const avui = new Date().toISOString().split('T')[0];
                     document.getElementById('dataJornada').value = avui;
 
@@ -762,8 +901,9 @@
 
         function mostrarJornades(jornades) {
             const container = document.getElementById('llistatJornades');
+            jornadesActuals = Array.isArray(jornades) ? jornades : [];
 
-            if (jornades.length === 0) {
+            if (jornadesActuals.length === 0) {
                 container.innerHTML = '<p class="text-center text-muted">Encara no has registrat cap jornada.</p>';
                 return;
             }
@@ -777,14 +917,17 @@
                                 <th>Entrada</th>
                                 <th>Sortida</th>
                                 <th>Activitats</th>
+                                <th>RA</th>
                                 <th>Estat</th>
                                 <th>Accions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            ${jornades.map(jornada => {
+                            ${jornadesActuals.map(jornada => {
                                 const dataFormatada = new Date(jornada.data).toLocaleDateString('ca-ES');
                                 const activitats = jornada.activitats ? jornada.activitats.substring(0, 50) + (jornada.activitats.length > 50 ? '...' : '') : '-';
+                                const totalRas = Array.isArray(jornada.ras) ? jornada.ras.length : 0;
+                                const teActivitats = jornada.activitats && jornada.activitats.trim() !== '';
                                 let estat = '';
                                 let estatClass = '';
                                 let needsEdit = false;
@@ -793,8 +936,8 @@
                                     estat = '⚠️ Sense sortida';
                                     estatClass = 'badge bg-warning text-dark';
                                     needsEdit = true;
-                                } else if (!jornada.activitats || jornada.activitats.trim() === '') {
-                                    estat = '⚠️ Sense activitats';
+                                } else if (!teActivitats && totalRas === 0) {
+                                    estat = '⚠️ Sense activitats ni RA';
                                     estatClass = 'badge bg-info text-white';
                                     needsEdit = true;
                                 } else {
@@ -804,13 +947,14 @@
 
                                 return `
                                     <tr ${needsEdit ? 'class="table-warning"' : ''}>
-                                        <td class="fw-semibold">${dataFormatada}</td>
-                                        <td>${jornada.hora_entrada}</td>
-                                        <td>${jornada.hora_sortida || '<span class="text-muted">-</span>'}</td>
-                                        <td><small>${activitats}</small></td>
+                                        <td class="fw-semibold">${escapeHtml(dataFormatada)}</td>
+                                        <td>${escapeHtml(jornada.hora_entrada)}</td>
+                                        <td>${jornada.hora_sortida ? escapeHtml(jornada.hora_sortida) : '<span class="text-muted">-</span>'}</td>
+                                        <td><small>${escapeHtml(activitats)}</small></td>
+                                        <td><small>${totalRas > 0 ? `${totalRas} RA` : '-'}</small></td>
                                         <td><span class="${estatClass}">${estat}</span></td>
                                         <td>
-                                            <button class="btn btn-sm btn-outline-primary me-1" onclick='editarJornada(${JSON.stringify(jornada)})' title="Editar">
+                                            <button class="btn btn-sm btn-outline-primary me-1" onclick="editarJornada(${jornada.id})" title="Editar">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
                                                     <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
                                                 </svg>
@@ -831,15 +975,29 @@
             `;
         }
 
-        function editarJornada(jornada) {
-            // Omplir el modal amb les dades de la jornada
+        async function editarJornada(jornadaId) {
+            const jornada = jornadesActuals.find(item => item.id === jornadaId);
+            if (!jornada) {
+                showToast('No s\'ha pogut obrir la jornada seleccionada', 'error');
+                return;
+            }
+
+            try {
+                await obtenirModulsRas();
+            } catch (error) {
+                showToast('No s\'han pogut carregar els RA', 'error');
+                return;
+            }
+
             document.getElementById('editJornadaId').value = jornada.id;
             document.getElementById('editDataJornada').value = new Date(jornada.data).toLocaleDateString('ca-ES');
             document.getElementById('editHoraEntrada').value = jornada.hora_entrada;
             document.getElementById('editHoraSortida').value = jornada.hora_sortida ? jornada.hora_sortida.substring(0, 5) : '';
             document.getElementById('editActivitatsTextarea').value = jornada.activitats || '';
 
-            // Mostrar el modal
+            const selectedRaIds = Array.isArray(jornada.ras) ? jornada.ras.map(ra => ra.id) : [];
+            renderRaCheckboxes('editRaCheckboxesContainer', selectedRaIds, 'editRaSelectionInfo');
+
             const modal = new bootstrap.Modal(document.getElementById('editarJornadaModal'));
             modal.show();
         }
@@ -848,6 +1006,7 @@
             const id = document.getElementById('editJornadaId').value;
             const horaSortida = document.getElementById('editHoraSortida').value;
             const activitats = document.getElementById('editActivitatsTextarea').value.trim();
+            const raIds = obtenirRaSeleccionats('editRaCheckboxesContainer');
 
             try {
                 const response = await fetch(`${API_URL}/jornades/${id}`, {
@@ -859,7 +1018,8 @@
                     },
                     body: JSON.stringify({
                         hora_sortida: horaSortida ? horaSortida + ':00' : null,
-                        activitats: activitats || null
+                        activitats: activitats || null,
+                        ra_ids: raIds
                     })
                 });
 
@@ -868,11 +1028,9 @@
                 if (response.ok) {
                     showToast('Jornada actualitzada correctament', 'success');
 
-                    // Tancar el modal
                     const modal = bootstrap.Modal.getInstance(document.getElementById('editarJornadaModal'));
                     modal.hide();
 
-                    // Recarregar jornades
                     carregarJornades();
                 } else {
                     showToast(result.error || 'Error en actualitzar la jornada', 'error');

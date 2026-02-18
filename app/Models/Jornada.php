@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Jornada extends Model
@@ -14,8 +15,7 @@ class Jornada extends Model
         'data',
         'hora_entrada',
         'hora_sortida',
-        'activitats'
-        //més endevant... quines ra's ha completat aquella jornada?
+        'activitats',
     ];
 
     protected $casts = [
@@ -25,5 +25,10 @@ class Jornada extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function ras(): BelongsToMany
+    {
+        return $this->belongsToMany(Ra::class, 'jornada_ra');
     }
 }

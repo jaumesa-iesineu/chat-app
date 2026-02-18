@@ -5,13 +5,15 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Jornada;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class AssistenciaController extends Controller
 {
     public function llistarJornades(Request $request)
     {
-        $jornades = Jornada::where('user_id', $request->user()->id)
+        $jornades = Jornada::with(['ras:id,ra,resultat_aprenentatge_codi'])
+            ->where('user_id', $request->user()->id)
             ->orderBy('data', 'desc')
             ->orderBy('hora_entrada', 'desc')
             ->get();
@@ -33,6 +35,8 @@ class AssistenciaController extends Controller
             'hora_entrada' => 'required|date_format:H:i:s',
             'hora_sortida' => 'nullable|date_format:H:i:s',
             'activitats' => 'nullable|string',
+            'ra_ids' => 'nullable|array',
+            'ra_ids.*' => 'integer|distinct|exists:ras,id',
         ]);
 
         if ($validator->fails()) {
@@ -48,13 +52,19 @@ class AssistenciaController extends Controller
             }
         }
 
-        $jornada = Jornada::create([
-            'user_id' => $request->user()->id,
-            'data' => $request->data,
-            'hora_entrada' => $request->hora_entrada,
-            'hora_sortida' => $request->hora_sortida,
-            'activitats' => $request->activitats,
-        ]);
+        $jornada = DB::transaction(function () use ($request) {
+            $jornada = Jornada::create([
+                'user_id' => $request->user()->id,
+                'data' => $request->data,
+                'hora_entrada' => $request->hora_entrada,
+                'hora_sortida' => $request->hora_sortida,
+                'activitats' => $request->activitats,
+            ]);
+
+            $jornada->ras()->sync($request->input('ra_ids', []));
+
+            return $jornada->load('ras:id,ra,resultat_aprenentatge_codi');
+        });
 
         return response()->json($jornada, 201);
     }
@@ -72,6 +82,8 @@ class AssistenciaController extends Controller
         $validator = Validator::make($request->all(), [
             'hora_sortida' => 'nullable|date_format:H:i:s|after:hora_entrada',
             'activitats' => 'nullable|string',
+            'ra_ids' => 'nullable|array',
+            'ra_ids.*' => 'integer|distinct|exists:ras,id',
         ]);
 
         if ($validator->fails()) {
@@ -87,9 +99,15 @@ class AssistenciaController extends Controller
             }
         }
 
-        $jornada->update($request->only(['hora_sortida', 'activitats']));
+        DB::transaction(function () use ($request, $jornada) {
+            $jornada->update($request->only(['hora_sortida', 'activitats']));
 
-        return response()->json($jornada);
+            if ($request->exists('ra_ids')) {
+                $jornada->ras()->sync($request->input('ra_ids', []));
+            }
+        });
+
+        return response()->json($jornada->load('ras:id,ra,resultat_aprenentatge_codi'));
     }
 
     public function eliminar(Request $request, $id)
