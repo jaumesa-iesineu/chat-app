@@ -79,6 +79,31 @@ body {
   border-radius: 2px;
 }
 
+.btn-registrar-jornada {
+  background: var(--gov-dark);
+  border: 1px solid #111827;
+  color: #fff;
+  letter-spacing: 0.5px;
+  font-size: 0.95rem;
+  padding: 0.75rem 2rem;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(17, 24, 39, 0.18);
+  transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-registrar-jornada:hover,
+.btn-registrar-jornada:focus {
+  color: #fff;
+  background: #111827;
+  border-color: #111827;
+  box-shadow: 0 3px 8px rgba(17, 24, 39, 0.24);
+}
+
+.btn-registrar-jornada:active {
+  background: #0f172a;
+  box-shadow: 0 1px 4px rgba(17, 24, 39, 0.2);
+}
+
 .development-badge {
   display: inline-block;
   background: #e5e7eb;
@@ -241,6 +266,35 @@ body {
   background: rgba(0, 0, 0, 0.3);
 }
 
+.ra-history-checkbox {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #9ca3af;
+  border-radius: 3px;
+  background: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+}
+
+.ra-history-checkbox::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  background: transparent;
+  border-radius: 1px;
+}
+
+.ra-history-checkbox-marked {
+  border-color: #15803d;
+}
+
+.ra-history-checkbox-marked::after {
+  background: #16a34a;
+}
+
 @media (max-width: 768px) {
   .mobile-padding-sm {
     padding: 0.5rem !important;
@@ -248,6 +302,12 @@ body {
 
   .message-max-width-mobile {
     max-width: 85% !important;
+  }
+
+  .btn-registrar-jornada {
+    width: 100%;
+    max-width: 320px;
+    font-size: 0.9rem;
   }
 
   .message-file img,

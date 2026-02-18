@@ -269,7 +269,7 @@
                     .filter(conv => !conv.conversation.private)
                     .forEach(conv => {
                         const div = document.createElement('a');
-                        div.className = 'list-group-item list-group-item-action border-0 border-bottom d-flex align-items-center gap-3 position-relative py-3';
+                        div.className = 'list-group-item list-group-item-action border-0 border-bottom d-flex align-items-center gap-3 position-relative py-3 ps-4';
                         div.id = `conv-${conv.conversation.id}`;
                         div.href = '#';
                         div.style.cursor = 'pointer';
@@ -306,7 +306,7 @@
 
                 usersData.users.forEach(user => {
                     const div = document.createElement('a');
-                    div.className = 'list-group-item list-group-item-action border-0 border-bottom d-flex align-items-center gap-3 position-relative py-3';
+                    div.className = 'list-group-item list-group-item-action border-0 border-bottom d-flex align-items-center gap-3 position-relative py-3 ps-4';
                     div.id = `user-${user.id}`;
                     div.href = '#';
                     div.style.cursor = 'pointer';

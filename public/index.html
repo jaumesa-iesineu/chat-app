@@ -211,6 +211,25 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="card gov-card shadow-sm border-0 mt-4">
+                    <div class="card-body p-4 p-md-5">
+                        <h2 class="fs-5 text-dark text-uppercase fw-semibold pb-3 mb-4 border-bottom" style="letter-spacing: 0.5px;">Hores realitzades</h2>
+                        <label class="text-muted small fw-bold d-block mb-2" style="letter-spacing: 0.3px; font-size: 0.75rem;">Hores realitzades:</label>
+                        <div class="progress" role="progressbar" aria-label="Progrés d'hores realitzades" aria-valuemin="0" aria-valuemax="200" aria-valuenow="0" style="height: 0.95rem;">
+                            <div id="horesProgressBar" class="progress-bar bg-success" style="width: 0%;"></div>
+                        </div>
+                        <div class="d-flex justify-content-end mt-2">
+                            <span id="horesProgressText" class="fw-semibold text-dark">0 / 200H</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-center mt-4">
+                    <button type="button" class="btn btn-registrar-jornada text-uppercase fw-semibold" onclick="anarARegistrarJornada()">
+                        Registrar Jornada
+                    </button>
+                </div>
                 </div>
 
             </div>
@@ -499,6 +518,8 @@
             document.getElementById('userRole').textContent = currentUser.role;
             document.getElementById('userNameHeader').textContent = currentUser.name;
             document.getElementById('userRoleHeader').textContent = currentUser.role;
+            actualitzarProgresHores([]);
+            carregarJornades();
 
             const activeTab = localStorage.getItem('activeTab') || 'home';
             restoreTab(activeTab);
@@ -556,10 +577,7 @@
             }
 
             if (tabName === 'ras') {
-                const container = document.getElementById('rasContainer');
-                if (container && container.innerHTML === '') {
-                    setTimeout(() => carregarRas(), 100);
-                }
+                setTimeout(() => carregarRas(), 100);
             }
 
             if (tabName === 'companies') {
@@ -572,6 +590,11 @@
             if (tabName === 'support') {
                 setTimeout(() => checkAssistenciaAccess(), 100);
             }
+        }
+
+        function anarARegistrarJornada() {
+            switchTab('support');
+            restoreTab('support');
         }
 
         let totesLesEmpreses = [];
@@ -640,6 +663,9 @@
 
         let totsElsModuls = [];
         let jornadesActuals = [];
+        let raIdsMarcatsHistoric = new Set();
+        let historicRasCarregat = false;
+        const OBJECTIU_HORES = 200;
 
         function escapeHtml(value) {
             return String(value ?? '')
@@ -648,6 +674,120 @@
                 .replace(/>/g, '&gt;')
                 .replace(/"/g, '&quot;')
                 .replace(/'/g, '&#39;');
+        }
+
+        function obtenirMinutsHora(hora) {
+            if (typeof hora !== 'string') {
+                return null;
+            }
+
+            const parts = hora.split(':').map(Number);
+            if (parts.length < 2 || parts.some(Number.isNaN)) {
+                return null;
+            }
+
+            const [hores, minuts, segons = 0] = parts;
+            return (hores * 60) + minuts + (segons / 60);
+        }
+
+        function calcularHoresRealitzades(jornades) {
+            if (!Array.isArray(jornades)) {
+                return 0;
+            }
+
+            const minutsTotals = jornades.reduce((acumulat, jornada) => {
+                const entrada = obtenirMinutsHora(jornada?.hora_entrada);
+                const sortida = obtenirMinutsHora(jornada?.hora_sortida);
+
+                if (entrada === null || sortida === null) {
+                    return acumulat;
+                }
+
+                const duradaMinuts = sortida - entrada;
+                if (duradaMinuts <= 0) {
+                    return acumulat;
+                }
+
+                return acumulat + duradaMinuts;
+            }, 0);
+
+            return minutsTotals / 60;
+        }
+
+        function formatHores(hores) {
+            const horesArrodonides = Math.round(hores * 10) / 10;
+
+            if (Number.isInteger(horesArrodonides)) {
+                return String(horesArrodonides);
+            }
+
+            return horesArrodonides.toLocaleString('ca-ES', {
+                minimumFractionDigits: 1,
+                maximumFractionDigits: 1
+            });
+        }
+
+        function actualitzarRasMarcatsHistoric(jornades) {
+            const raMarcades = new Set();
+
+            if (Array.isArray(jornades)) {
+                jornades.forEach((jornada) => {
+                    if (!Array.isArray(jornada?.ras)) {
+                        return;
+                    }
+
+                    jornada.ras.forEach((ra) => {
+                        const raId = Number(ra?.id);
+                        if (Number.isFinite(raId)) {
+                            raMarcades.add(raId);
+                        }
+                    });
+                });
+            }
+
+            raIdsMarcatsHistoric = raMarcades;
+            historicRasCarregat = true;
+        }
+
+        async function assegurarRasMarcatsHistoric() {
+            if (historicRasCarregat) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/jornades`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('No s\'ha pogut carregar l\'històric de jornades');
+                }
+
+                const jornades = await response.json();
+                actualitzarRasMarcatsHistoric(Array.isArray(jornades) ? jornades : []);
+            } catch (error) {
+                console.error('Error carregant l\'històric de RA marcats:', error);
+                actualitzarRasMarcatsHistoric([]);
+            }
+        }
+
+        function actualitzarProgresHores(jornades) {
+            const progressBar = document.getElementById('horesProgressBar');
+            const progressText = document.getElementById('horesProgressText');
+
+            if (!progressBar || !progressText) {
+                return;
+            }
+
+            const horesTotals = calcularHoresRealitzades(jornades);
+            const percentatge = Math.min((horesTotals / OBJECTIU_HORES) * 100, 100);
+
+            progressBar.style.width = `${percentatge}%`;
+            progressBar.parentElement?.setAttribute('aria-valuenow', Math.min(horesTotals, OBJECTIU_HORES).toFixed(1));
+            progressText.textContent = `${formatHores(horesTotals)} / ${OBJECTIU_HORES}H`;
         }
 
         async function obtenirModulsRas() {
@@ -675,7 +815,10 @@
             const container = document.getElementById('rasContainer');
             container.innerHTML = '<p class="text-center text-muted">Carregant RA\'s...</p>';
             try {
-                const moduls = await obtenirModulsRas();
+                const [moduls] = await Promise.all([
+                    obtenirModulsRas(),
+                    assegurarRasMarcatsHistoric()
+                ]);
                 mostrarRas(moduls);
             } catch (error) {
                 console.error('Error carregant RA\'s:', error);
@@ -698,12 +841,24 @@
                         <span class="fw-semibold text-dark">${escapeHtml(modul.modul)}</span>
                     </div>
                     <ul class="list-group list-group-flush">
-                        ${modul.ras.map(ra => `
-                            <li class="list-group-item px-4 py-3">
-                                <p class="mb-0 text-dark">${escapeHtml(ra.ra)}</p>
-                                ${ra.descripcio ? `<p class="mb-0 mt-1 small text-muted">${escapeHtml(ra.descripcio)}</p>` : ''}
-                            </li>
-                        `).join('')}
+                        ${modul.ras.map(ra => {
+                            const estaMarcatHistoric = raIdsMarcatsHistoric.has(Number(ra.id));
+                            const checkboxClass = estaMarcatHistoric
+                                ? 'ra-history-checkbox ra-history-checkbox-marked'
+                                : 'ra-history-checkbox';
+
+                            return `
+                                <li class="list-group-item px-4 py-3">
+                                    <div class="d-flex align-items-start gap-3">
+                                        <span class="${checkboxClass}" aria-hidden="true"></span>
+                                        <div>
+                                            <p class="mb-0 text-dark">${escapeHtml(ra.ra)}</p>
+                                            ${ra.descripcio ? `<p class="mb-0 mt-1 small text-muted">${escapeHtml(ra.descripcio)}</p>` : ''}
+                                        </div>
+                                    </div>
+                                </li>
+                            `;
+                        }).join('')}
                     </ul>
                 </div>
             `).join('');
@@ -848,6 +1003,10 @@
             localStorage.removeItem('user');
             token = null;
             currentUser = null;
+            jornadesActuals = [];
+            raIdsMarcatsHistoric = new Set();
+            historicRasCarregat = false;
+            actualitzarProgresHores([]);
             document.getElementById('loginContainer').style.display = 'flex';
             document.getElementById('loginContainer').classList.remove('d-none');
             document.getElementById('dashboard').style.display = 'none';
@@ -972,6 +1131,7 @@
                 mostrarJornades(jornades);
             } catch (error) {
                 console.error('Error carregant jornades:', error);
+                actualitzarRasMarcatsHistoric([]);
                 document.getElementById('llistatJornades').innerHTML = '<p class="text-danger">Error carregant les jornades.</p>';
             }
         }
@@ -979,6 +1139,8 @@
         function mostrarJornades(jornades) {
             const container = document.getElementById('llistatJornades');
             jornadesActuals = Array.isArray(jornades) ? jornades : [];
+            actualitzarRasMarcatsHistoric(jornadesActuals);
+            actualitzarProgresHores(jornadesActuals);
 
             if (jornadesActuals.length === 0) {
                 container.innerHTML = '<p class="text-center text-muted">Encara no has registrat cap jornada.</p>';
