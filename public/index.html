@@ -309,7 +309,7 @@
                 </div>
             </div>
 
-            <div class="tab-pane fade overflow-auto" id="rasTab" role="tabpanel" aria-labelledby="ras-tab">
+            <div class="tab-pane fade overflow-auto h-100" id="rasTab" role="tabpanel" aria-labelledby="ras-tab">
                 <div class="container-fluid p-3 p-md-4 p-lg-5">
                     <div class="card gov-card shadow-sm border-0 mb-4">
                         <div class="card-body p-4 p-md-5">
@@ -331,16 +331,13 @@
                                     id="searchRas"
                                     class="form-control border-start-0 bg-light"
                                     placeholder="Cerca RA's per nom, descripció, família o any..."
+                                    oninput="filtrarRas()"
                                 >
                             </div>
                         </div>
                     </div>
 
-                    <div class="card gov-card-secondary shadow-sm border-0 text-center">
-                        <div class="card-body p-5 p-md-6">
-                            <p class="text-muted mb-0 lh-lg">Aquesta secció és només visual i està en desenvolupament.</p>
-                        </div>
-                    </div>
+                    <div id="rasContainer"></div>
                 </div>
             </div>
 
@@ -489,6 +486,10 @@
                         setTimeout(() => carregarEmpreses(), 100);
                     }
 
+                    if (tabName === 'ras') {
+                        setTimeout(() => carregarRas(), 100);
+                    }
+
                     if (tabName === 'support') {
                         setTimeout(() => checkAssistenciaAccess(), 100);
                     }
@@ -506,6 +507,13 @@
                         iframe.src = iframe.src;
                     }
                 }, 100);
+            }
+
+            if (tabName === 'ras') {
+                const container = document.getElementById('rasContainer');
+                if (container && container.innerHTML === '') {
+                    setTimeout(() => carregarRas(), 100);
+                }
             }
 
             if (tabName === 'companies') {
@@ -582,6 +590,71 @@
             });
 
             mostrarEmpreses(empresesFiltrades);
+        }
+
+        let totsElsModuls = [];
+
+        async function carregarRas() {
+            const container = document.getElementById('rasContainer');
+            container.innerHTML = '<p class="text-center text-muted">Carregant RA\'s...</p>';
+            try {
+                const response = await fetch(`${API_URL}/ras`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
+                    }
+                });
+                const moduls = await response.json();
+                totsElsModuls = moduls;
+                mostrarRas(moduls);
+            } catch (error) {
+                console.error('Error carregant RA\'s:', error);
+                container.innerHTML = '<p class="text-center text-danger">Error carregant les RA\'s.</p>';
+            }
+        }
+
+        function mostrarRas(moduls) {
+            const container = document.getElementById('rasContainer');
+
+            if (moduls.length === 0) {
+                container.innerHTML = '<div class="alert alert-info text-center">No s\'han trobat RA\'s.</div>';
+                return;
+            }
+
+            container.innerHTML = moduls.map(modul => `
+                <div class="card shadow-sm border-0 mb-3">
+                    <div class="card-header bg-white border-bottom py-3">
+                        <span class="badge bg-primary me-2">${modul.codi}</span>
+                        <span class="fw-semibold text-dark">${modul.modul}</span>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        ${modul.ras.map(ra => `
+                            <li class="list-group-item px-4 py-3">
+                                <p class="mb-0 text-dark">${ra.ra}</p>
+                                ${ra.descripcio ? `<p class="mb-0 mt-1 small text-muted">${ra.descripcio}</p>` : ''}
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+            `).join('');
+        }
+
+        function filtrarRas() {
+            const searchText = document.getElementById('searchRas').value.toLowerCase();
+
+            const modulsFiltrats = totsElsModuls
+                .map(modul => ({
+                    ...modul,
+                    ras: modul.ras.filter(ra =>
+                        ra.ra.toLowerCase().includes(searchText) ||
+                        (ra.descripcio || '').toLowerCase().includes(searchText) ||
+                        modul.modul.toLowerCase().includes(searchText) ||
+                        modul.codi.toLowerCase().includes(searchText)
+                    )
+                }))
+                .filter(modul => modul.ras.length > 0);
+
+            mostrarRas(modulsFiltrats);
         }
 
         function logout() {

@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\AssistenciaController;
 use App\Http\Controllers\Api\ChatController;
+use App\Http\Controllers\Api\RaController;
 use App\Http\Controllers\EmpresaController;
 use Illuminate\Support\Facades\Route;
 
@@ -27,6 +28,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/conversations/{conversationId}/messages', [ChatController::class, 'getMessages']);
     Route::post('/conversations/{conversationId}/messages', [ChatController::class, 'sendMessage']);
     Route::get('/conversations/{conversationId}/participants', [ChatController::class, 'getParticipants']);
+
+    // RAs
+    Route::get('/ras', [RaController::class, 'llistar']);
 
     // Assistència
     Route::get('/jornades', [AssistenciaController::class, 'llistarJornades']);
