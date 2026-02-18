@@ -9,8 +9,9 @@ class Ra extends Model
     protected $table = 'ras';
 
     protected $fillable = [
+        'resultat_aprenentatge_codi',
+        'ra',
         'descripcio',
-        'resultat_aprenentatge_codi'
     ];
 
     public function resultatAprenentatge()
