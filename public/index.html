@@ -161,7 +161,7 @@
                         <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#homeTab" type="button" role="tab" aria-controls="homeTab" aria-selected="true" onclick="switchTab('home')">Inici</button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="chat-tab" data-bs-toggle="tab" data-bs-target="#chatTab" type="button" role="tab" aria-controls="chatTab" aria-selected="false" onclick="switchTab('chat')">Xat</button>
+                        <button class="nav-link position-relative" id="chat-tab" data-bs-toggle="tab" data-bs-target="#chatTab" type="button" role="tab" aria-controls="chatTab" aria-selected="false" onclick="switchTab('chat')">Xat <span id="chatUnreadBadge" class="badge rounded-pill bg-success d-none" style="font-size:10px; padding:3px 6px; vertical-align:top;">0</span></button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="support-tab" data-bs-toggle="tab" data-bs-target="#supportTab" type="button" role="tab" aria-controls="supportTab" aria-selected="false" onclick="switchTab('support')">Assistència</button>
@@ -654,6 +654,34 @@
 
             const activeTab = localStorage.getItem('activeTab') || 'home';
             restoreTab(activeTab);
+
+            // Comprovar missatges no llegits cada 5 segons
+            checkChatUnread();
+            setInterval(checkChatUnread, 5000);
+        }
+
+        async function checkChatUnread() {
+            if (!token) return;
+            try {
+                const response = await fetch(`${API_URL}/conversations`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
+                    }
+                });
+                if (!response.ok) return;
+                const conversations = await response.json();
+                const totalUnread = conversations.reduce((sum, c) => sum + (c.unread_count || 0), 0);
+                const badge = document.getElementById('chatUnreadBadge');
+                if (totalUnread > 0) {
+                    badge.textContent = totalUnread;
+                    badge.classList.remove('d-none');
+                } else {
+                    badge.classList.add('d-none');
+                }
+            } catch (e) {
+                // silenci
+            }
         }
 
         function restoreTab(tabName) {
