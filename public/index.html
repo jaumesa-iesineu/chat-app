@@ -150,7 +150,6 @@
                     >
                         <span class="navbar-toggler-icon"></span>
                     </button>
-                    <button type="button" class="btn btn-outline-light btn-sm text-uppercase" style="letter-spacing: 0.5px; font-size: 0.75rem;" id="logoutBtn" onclick="logout()">Tancar sessió</button>
                 </div>
             </div>
         </nav>
@@ -670,7 +669,8 @@
                     }
                 });
                 if (!response.ok) return;
-                const conversations = await response.json();
+                const data = await response.json();
+                const conversations = data.conversations || [];
                 const totalUnread = conversations.reduce((sum, c) => sum + (c.unread_count || 0), 0);
                 const badge = document.getElementById('chatUnreadBadge');
                 if (totalUnread > 0) {
