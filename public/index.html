@@ -128,7 +128,7 @@
     </div>
 
     <div id="dashboard" class="d-flex flex-column vh-100" style="display: none !important;">
-        <nav class="navbar navbar-dark gov-header">
+        <nav class="navbar navbar-expand-md navbar-dark gov-header">
             <div class="container-fluid px-3 px-md-4 px-lg-5">
                 <div class="d-flex align-items-center">
                     <span class="gov-logo-bar"></span>
@@ -139,35 +139,47 @@
                         <span class="fw-semibold small" id="userNameHeader"></span>
                         <span class="small opacity-75" style="font-size: 0.75rem;" id="userRoleHeader"></span>
                     </div>
+                    <button
+                        class="navbar-toggler d-md-none"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#dashboardTabsNav"
+                        aria-controls="dashboardTabsNav"
+                        aria-expanded="false"
+                        aria-label="Mostrar navegació"
+                    >
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
                     <button type="button" class="btn btn-outline-light btn-sm text-uppercase" style="letter-spacing: 0.5px; font-size: 0.75rem;" id="logoutBtn" onclick="logout()">Tancar sessió</button>
                 </div>
             </div>
-        </nav>
-
-        <div class="bg-white border-bottom">
-            <div class="container-fluid px-3 px-md-4 px-lg-5">
-                <ul class="nav nav-tabs border-0 gov-tabs" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#homeTab" type="button" role="tab" aria-controls="homeTab" aria-selected="true" onclick="switchTab('home')">Inici</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="chat-tab" data-bs-toggle="tab" data-bs-target="#chatTab" type="button" role="tab" aria-controls="chatTab" aria-selected="false" onclick="switchTab('chat')">Xat</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="support-tab" data-bs-toggle="tab" data-bs-target="#supportTab" type="button" role="tab" aria-controls="supportTab" aria-selected="false" onclick="switchTab('support')">Assistència</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="companies-tab" data-bs-toggle="tab" data-bs-target="#companiesTab" type="button" role="tab" aria-controls="companiesTab" aria-selected="false" onclick="switchTab('companies')">Empreses</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="ras-tab" data-bs-toggle="tab" data-bs-target="#rasTab" type="button" role="tab" aria-controls="rasTab" aria-selected="false" onclick="switchTab('ras')">RA's</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profileTab" type="button" role="tab" aria-controls="profileTab" aria-selected="false" onclick="switchTab('profile')">Perfil</button>
-                    </li>
-                </ul>
+            <div class="collapse navbar-collapse" id="dashboardTabsNav">
+                <div class="w-100 bg-white border-top border-light">
+                    <div class="container-fluid px-3 px-md-4 px-lg-5">
+                        <ul class="nav nav-tabs border-0 gov-tabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#homeTab" type="button" role="tab" aria-controls="homeTab" aria-selected="true" onclick="switchTab('home')">Inici</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="chat-tab" data-bs-toggle="tab" data-bs-target="#chatTab" type="button" role="tab" aria-controls="chatTab" aria-selected="false" onclick="switchTab('chat')">Xat</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="support-tab" data-bs-toggle="tab" data-bs-target="#supportTab" type="button" role="tab" aria-controls="supportTab" aria-selected="false" onclick="switchTab('support')">Assistència</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="companies-tab" data-bs-toggle="tab" data-bs-target="#companiesTab" type="button" role="tab" aria-controls="companiesTab" aria-selected="false" onclick="switchTab('companies')">Empreses</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="ras-tab" data-bs-toggle="tab" data-bs-target="#rasTab" type="button" role="tab" aria-controls="rasTab" aria-selected="false" onclick="switchTab('ras')">RA's</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profileTab" type="button" role="tab" aria-controls="profileTab" aria-selected="false" onclick="switchTab('profile')">Perfil</button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
-        </div>
+        </nav>
 
         <div class="flex-grow-1 overflow-hidden" style="background: #f5f7fa;">
             <div class="tab-content h-100">
@@ -687,6 +699,12 @@
 
         function switchTab(tabName) {
             localStorage.setItem('activeTab', tabName);
+
+            const tabsCollapseElement = document.getElementById('dashboardTabsNav');
+            const isMobile = window.matchMedia('(max-width: 767.98px)').matches;
+            if (tabsCollapseElement && isMobile && tabsCollapseElement.classList.contains('show')) {
+                bootstrap.Collapse.getOrCreateInstance(tabsCollapseElement).hide();
+            }
 
             if (tabName === 'chat') {
                 setTimeout(() => {

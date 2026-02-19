@@ -69,6 +69,33 @@ body {
   border-top: none;
 }
 
+@media (max-width: 767.98px) {
+  .gov-tabs {
+    flex-direction: column;
+  }
+
+  .gov-tabs .nav-item {
+    width: 100%;
+  }
+
+  .gov-tabs .nav-link {
+    width: 100%;
+    text-align: left;
+    padding: 12px 16px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .gov-tabs .nav-item:last-child .nav-link {
+    border-bottom: none;
+  }
+
+  .gov-tabs .nav-link.active {
+    border-bottom: 1px solid #e5e7eb !important;
+    border-left: 3px solid var(--gov-dark);
+    padding-left: 13px;
+  }
+}
+
 .gov-card {
   border-left: 4px solid var(--gov-dark);
   border-radius: 2px;
