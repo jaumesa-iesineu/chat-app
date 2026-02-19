@@ -407,12 +407,129 @@
             </div>
 
             <div class="tab-pane fade overflow-auto" id="profileTab" role="tabpanel" aria-labelledby="profile-tab">
-                <div class="container-fluid p-3 p-md-4 p-lg-5">
-                    <div class="card gov-card-secondary shadow-sm border-0 text-center">
-                        <div class="card-body p-5 p-md-6">
-                            <h2 class="fs-4 text-dark text-uppercase fw-semibold mb-3" style="letter-spacing: 0.5px;">Perfil</h2>
-                            <p class="text-muted mb-4 lh-lg">Aquesta secció està en desenvolupament.</p>
-                            <span class="development-badge">En desenvolupament</span>
+                <div class="container-fluid p-3 p-md-4 p-lg-5 profile-tab">
+                    <div class="card profile-hero-card shadow-sm border-0 mb-4">
+                        <div class="card-body p-4 p-md-5">
+                            <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-4">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="profile-avatar-lg" id="profileUserInitials">--</div>
+                                    <div>
+                                        <p class="text-uppercase text-muted fw-semibold small mb-1" style="letter-spacing: 0.6px;">Compte actiu</p>
+                                        <h2 class="fs-3 fw-semibold text-dark mb-1 nomUsuari" id="profileUserName">Usuari</h2>
+                                        <p class="mb-0 text-muted" id="profileRoleHint">Espai personal del portal.</p>
+                                    </div>
+                                </div>
+                                <div class="d-flex flex-column align-items-md-end gap-2">
+                                    <span class="badge text-bg-light profile-role-pill" id="profileUserRole">No definit</span>
+                                    <span class="profile-status-pill">
+                                        <span class="profile-status-dot"></span>
+                                        <span id="profileUserState">Sessió activa</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-4">
+                        <div class="col-12 col-xl-7">
+                            <div class="card gov-card shadow-sm border-0 h-100">
+                                <div class="card-body p-4 p-md-5">
+                                    <h3 class="fs-5 text-dark text-uppercase fw-semibold pb-3 mb-4 border-bottom" style="letter-spacing: 0.5px;">Informació del compte</h3>
+                                    <div class="row g-3">
+                                        <div class="col-12 col-md-6">
+                                            <div class="profile-info-card">
+                                                <span class="profile-info-label">Nom complet</span>
+                                                <span class="profile-info-value nomUsuari" id="profileInfoName">-</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                            <div class="profile-info-card">
+                                                <span class="profile-info-label">Correu electrònic</span>
+                                                <span class="profile-info-value" id="profileInfoEmail">-</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                            <div class="profile-info-card">
+                                                <span class="profile-info-label">Rol</span>
+                                                <span class="profile-info-value" id="profileInfoRole">-</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                            <div class="profile-info-card">
+                                                <span class="profile-info-label">ID usuari</span>
+                                                <span class="profile-info-value" id="profileInfoId">-</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                            <div class="profile-info-card">
+                                                <span class="profile-info-label">D'alta des de</span>
+                                                <span class="profile-info-value" id="profileInfoSince">-</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                            <div class="profile-info-card">
+                                                <span class="profile-info-label">Estat</span>
+                                                <span class="profile-info-value text-success" id="profileInfoStatus">Actiu</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-xl-5">
+                            <div class="card gov-card-secondary shadow-sm border-0 h-100">
+                                <div class="card-body p-4 p-md-5">
+                                    <h3 class="fs-5 text-dark text-uppercase fw-semibold pb-3 mb-4 border-bottom" style="letter-spacing: 0.5px;">Resum d'activitat</h3>
+                                    <div class="row g-3 mb-4">
+                                        <div class="col-6">
+                                            <div class="profile-kpi">
+                                                <span class="profile-kpi-value" id="profileTotalJornades">0</span>
+                                                <span class="profile-kpi-label">Jornades</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="profile-kpi">
+                                                <span class="profile-kpi-value" id="profileHoresTotals">0h</span>
+                                                <span class="profile-kpi-label">Hores totals</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="profile-kpi">
+                                                <span class="profile-kpi-value text-success" id="profileJornadesCompletes">0</span>
+                                                <span class="profile-kpi-label">Completes</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="profile-kpi">
+                                                <span class="profile-kpi-value text-warning" id="profileJornadesPendents">0</span>
+                                                <span class="profile-kpi-label">Pendents</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="profile-progress-wrap">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span class="small text-uppercase fw-semibold text-muted" style="letter-spacing: 0.5px;">Objectiu d'hores</span>
+                                            <span class="fw-semibold text-dark" id="profileObjectiuPercent">0%</span>
+                                        </div>
+                                        <div class="progress" role="progressbar" aria-label="Progrés d'hores de perfil" aria-valuemin="0" aria-valuemax="200" aria-valuenow="0">
+                                            <div class="progress-bar" id="profileProgressBar" style="width: 0%;"></div>
+                                        </div>
+                                        <small class="text-muted d-block mt-2" id="profileProgressText">0 / 200H</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="card shadow-sm border-0">
+                                <div class="card-body p-4">
+                                    <h3 class="fs-6 text-dark text-uppercase fw-semibold mb-3" style="letter-spacing: 0.5px;">Accions ràpides</h3>
+                                    <div class="d-flex flex-column flex-md-row gap-2 profile-quick-actions">
+                                        <button type="button" class="btn btn-dark text-uppercase fw-semibold" onclick="anarARegistrarJornada()">Registrar jornada</button>
+                                        <button type="button" class="btn btn-outline-dark text-uppercase fw-semibold" onclick="switchTab('ras'); restoreTab('ras');">Veure RA's</button>
+                                        <button type="button" class="btn btn-outline-secondary text-uppercase fw-semibold" onclick="switchTab('chat'); restoreTab('chat');">Obrir xat</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -515,10 +632,14 @@
             document.getElementById('dashboard').classList.remove('d-none');
 
             document.getElementById('userName').textContent = currentUser.name;
+            document.querySelectorAll('.nomUsuari').forEach((el) => {
+                el.textContent = currentUser.name;
+            });
             document.getElementById('userRole').textContent = currentUser.role;
             document.getElementById('userNameHeader').textContent = currentUser.name;
             document.getElementById('userRoleHeader').textContent = currentUser.role;
             actualitzarProgresHores([]);
+            actualitzarPerfilUsuari();
             carregarJornades();
 
             const activeTab = localStorage.getItem('activeTab') || 'home';
@@ -725,6 +846,131 @@
                 minimumFractionDigits: 1,
                 maximumFractionDigits: 1
             });
+        }
+
+        function obtenirInicialsNom(nom) {
+            if (typeof nom !== 'string') {
+                return '--';
+            }
+
+            const paraules = nom.trim().split(/\s+/).filter(Boolean);
+            if (paraules.length === 0) {
+                return '--';
+            }
+
+            return paraules
+                .slice(0, 2)
+                .map((part) => part.charAt(0).toUpperCase())
+                .join('');
+        }
+
+        function formatDataUsuari(data) {
+            if (!data) {
+                return 'No disponible';
+            }
+
+            const dataObjecte = new Date(data);
+            if (Number.isNaN(dataObjecte.getTime())) {
+                return 'No disponible';
+            }
+
+            return dataObjecte.toLocaleDateString('ca-ES');
+        }
+
+        function obtenirEtiquetaRol(rol) {
+            const rolNormalitzat = String(rol || '').toLowerCase();
+            const mapRol = {
+                alumne: 'Alumne',
+                professor: 'Professor',
+                empresari: 'Empresari'
+            };
+
+            if (mapRol[rolNormalitzat]) {
+                return mapRol[rolNormalitzat];
+            }
+
+            if (!rolNormalitzat) {
+                return 'No definit';
+            }
+
+            return rolNormalitzat.charAt(0).toUpperCase() + rolNormalitzat.slice(1);
+        }
+
+        function calcularResumJornades(jornades) {
+            const jornadesValides = Array.isArray(jornades) ? jornades : [];
+            let completes = 0;
+            let pendents = 0;
+
+            jornadesValides.forEach((jornada) => {
+                const teSortida = Boolean(jornada?.hora_sortida);
+                const teActivitats = typeof jornada?.activitats === 'string'
+                    ? jornada.activitats.trim().length > 0
+                    : Boolean(jornada?.activitats);
+                const teRas = Array.isArray(jornada?.ras) && jornada.ras.length > 0;
+
+                if (teSortida && teActivitats && teRas) {
+                    completes += 1;
+                } else {
+                    pendents += 1;
+                }
+            });
+
+            return {
+                total: jornadesValides.length,
+                completes,
+                pendents
+            };
+        }
+
+        function actualitzarTextPerfil(id, valor) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.textContent = valor;
+            }
+        }
+
+        function actualitzarPerfilUsuari() {
+            if (!currentUser) {
+                return;
+            }
+
+            const nom = currentUser.name || 'Usuari';
+            const correu = currentUser.email || 'No disponible';
+            const etiquetaRol = obtenirEtiquetaRol(currentUser.role);
+            const dataAlta = formatDataUsuari(currentUser.created_at);
+            const idUsuari = currentUser.id ? `#${currentUser.id}` : 'No disponible';
+            const resum = calcularResumJornades(jornadesActuals);
+            const horesTotals = calcularHoresRealitzades(jornadesActuals);
+            const percentatge = Math.min((horesTotals / OBJECTIU_HORES) * 100, 100);
+            const textContextRol = currentUser.role === 'alumne'
+                ? 'Consulta el teu progrés de jornades i objectius formatius.'
+                : 'Gestiona la teva activitat i comunicació dins el portal.';
+
+            actualitzarTextPerfil('profileUserInitials', obtenirInicialsNom(nom));
+            actualitzarTextPerfil('profileUserName', nom);
+            actualitzarTextPerfil('profileRoleHint', textContextRol);
+            actualitzarTextPerfil('profileUserRole', etiquetaRol);
+            actualitzarTextPerfil('profileUserState', 'Sessió activa');
+
+            actualitzarTextPerfil('profileInfoName', nom);
+            actualitzarTextPerfil('profileInfoEmail', correu);
+            actualitzarTextPerfil('profileInfoRole', etiquetaRol);
+            actualitzarTextPerfil('profileInfoId', idUsuari);
+            actualitzarTextPerfil('profileInfoSince', dataAlta);
+            actualitzarTextPerfil('profileInfoStatus', 'Actiu');
+
+            actualitzarTextPerfil('profileTotalJornades', String(resum.total));
+            actualitzarTextPerfil('profileHoresTotals', `${formatHores(horesTotals)}h`);
+            actualitzarTextPerfil('profileJornadesCompletes', String(resum.completes));
+            actualitzarTextPerfil('profileJornadesPendents', String(resum.pendents));
+            actualitzarTextPerfil('profileObjectiuPercent', `${Math.round(percentatge)}%`);
+            actualitzarTextPerfil('profileProgressText', `${formatHores(horesTotals)} / ${OBJECTIU_HORES}H`);
+
+            const barraProgres = document.getElementById('profileProgressBar');
+            if (barraProgres) {
+                barraProgres.style.width = `${percentatge}%`;
+                barraProgres.parentElement?.setAttribute('aria-valuenow', Math.min(horesTotals, OBJECTIU_HORES).toFixed(1));
+            }
         }
 
         function actualitzarRasMarcatsHistoric(jornades) {
@@ -1007,6 +1253,7 @@
             raIdsMarcatsHistoric = new Set();
             historicRasCarregat = false;
             actualitzarProgresHores([]);
+            actualitzarPerfilUsuari();
             document.getElementById('loginContainer').style.display = 'flex';
             document.getElementById('loginContainer').classList.remove('d-none');
             document.getElementById('dashboard').style.display = 'none';
@@ -1141,6 +1388,7 @@
             jornadesActuals = Array.isArray(jornades) ? jornades : [];
             actualitzarRasMarcatsHistoric(jornadesActuals);
             actualitzarProgresHores(jornadesActuals);
+            actualitzarPerfilUsuari();
 
             if (jornadesActuals.length === 0) {
                 container.innerHTML = '<p class="text-center text-muted">Encara no has registrat cap jornada.</p>';
