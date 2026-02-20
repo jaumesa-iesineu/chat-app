@@ -77,7 +77,7 @@ start_all() {
 
     echo ""
     echo -e "${GREEN}Serveis iniciats${NC}"
-    echo -e "Xat disponible a: ${BLUE}http://localhost:80/chat.html${NC}"
+    echo -e "Xat disponible a: ${BLUE}http://localhost:80/${NC}"
     echo ""
     read -p "Prem Enter per continuar..."
 }
@@ -198,7 +198,7 @@ open_browser() {
     echo -e "${BLUE}Obrint navegador...${NC}"
 
     if check_laravel; then
-        open "http://localhost/chat.html"
+        open "http://localhost/"
         echo -e "${GREEN}Navegador obert${NC}"
     else
         echo -e "${RED}Error: El servidor no està funcionant. Engega els serveis primer.${NC}"
