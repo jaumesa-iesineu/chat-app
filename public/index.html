@@ -190,59 +190,62 @@
                     </div>
                 </div>
 
-                <div class="card gov-card shadow-sm border-0">
-                    <div class="card-body p-4 p-md-5">
-                        <h2 class="fs-5 text-dark text-uppercase fw-semibold pb-3 mb-4 border-bottom" style="letter-spacing: 0.5px;">El teu perfil</h2>
-                        <div class="row g-3 g-md-4">
-                            <div class="col-12 col-md-6 col-lg-4">
-                                <div class="card gov-card-secondary bg-light border-0">
-                                    <div class="card-body p-3 p-md-4">
-                                        <label class="text-muted text-uppercase small fw-bold d-block mb-2" style="letter-spacing: 0.8px; font-size: 0.6875rem;">Nom complet</label>
-                                        <span class="d-block fs-5 text-dark fw-medium" id="userName"></span>
+                <div id="homeStudentContent">
+                    <div class="card gov-card shadow-sm border-0">
+                        <div class="card-body p-4 p-md-5">
+                            <h2 class="fs-5 text-dark text-uppercase fw-semibold pb-3 mb-4 border-bottom" style="letter-spacing: 0.5px;">El teu perfil</h2>
+                            <div class="row g-3 g-md-4">
+                                <div class="col-12 col-md-6 col-lg-4">
+                                    <div class="card gov-card-secondary bg-light border-0">
+                                        <div class="card-body p-3 p-md-4">
+                                            <label class="text-muted text-uppercase small fw-bold d-block mb-2" style="letter-spacing: 0.8px; font-size: 0.6875rem;">Nom complet</label>
+                                            <span class="d-block fs-5 text-dark fw-medium" id="userName"></span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-12 col-md-6 col-lg-4">
-                                <div class="card gov-card-secondary bg-light border-0">
-                                    <div class="card-body p-3 p-md-4">
-                                        <label class="text-muted text-uppercase small fw-bold d-block mb-2" style="letter-spacing: 0.8px; font-size: 0.6875rem;">Rol</label>
-                                        <span class="d-block fs-5 text-dark fw-medium" id="userRole"></span>
+                                <div class="col-12 col-md-6 col-lg-4">
+                                    <div class="card gov-card-secondary bg-light border-0">
+                                        <div class="card-body p-3 p-md-4">
+                                            <label class="text-muted text-uppercase small fw-bold d-block mb-2" style="letter-spacing: 0.8px; font-size: 0.6875rem;">Rol</label>
+                                            <span class="d-block fs-5 text-dark fw-medium" id="userRole"></span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-12 col-md-6 col-lg-4">
-                                <div class="card gov-card-secondary bg-light border-0">
-                                    <div class="card-body p-3 p-md-4">
-                                        <label class="text-muted text-uppercase small fw-bold d-block mb-2" style="letter-spacing: 0.8px; font-size: 0.6875rem;">Estat</label>
-                                        <span class="d-block fs-5 fw-semibold" style="color: #059669;">ACTIU</span>
+                                <div class="col-12 col-md-6 col-lg-4">
+                                    <div class="card gov-card-secondary bg-light border-0">
+                                        <div class="card-body p-3 p-md-4">
+                                            <label class="text-muted text-uppercase small fw-bold d-block mb-2" style="letter-spacing: 0.8px; font-size: 0.6875rem;">Estat</label>
+                                            <span class="d-block fs-5 fw-semibold" style="color: #059669;">ACTIU</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="card gov-card shadow-sm border-0 mt-4">
-                    <div class="card-body p-4 p-md-5">
-                        <h2 class="fs-5 text-dark text-uppercase fw-semibold pb-3 mb-4 border-bottom" style="letter-spacing: 0.5px;">Hores realitzades</h2>
-                        <label class="text-muted small fw-bold d-block mb-2" style="letter-spacing: 0.3px; font-size: 0.75rem;">Hores realitzades:</label>
-                        <div class="progress" role="progressbar" aria-label="Progrés d'hores realitzades" aria-valuemin="0" aria-valuemax="200" aria-valuenow="0" style="height: 0.95rem;">
-                            <div id="horesProgressBar" class="progress-bar bg-success" style="width: 0%;"></div>
+                    <div class="card gov-card shadow-sm border-0 mt-4">
+                        <div class="card-body p-4 p-md-5">
+                            <h2 class="fs-5 text-dark text-uppercase fw-semibold pb-3 mb-4 border-bottom" style="letter-spacing: 0.5px;">Hores realitzades</h2>
+                            <label class="text-muted small fw-bold d-block mb-2" style="letter-spacing: 0.3px; font-size: 0.75rem;">Hores realitzades:</label>
+                            <div class="progress" role="progressbar" aria-label="Progrés d'hores realitzades" aria-valuemin="0" aria-valuemax="200" aria-valuenow="0" style="height: 0.95rem;">
+                                <div id="horesProgressBar" class="progress-bar bg-success" style="width: 0%;"></div>
+                            </div>
+                            <div class="d-flex justify-content-end mt-2">
+                                <span id="horesProgressText" class="fw-semibold text-dark">0 / 200H</span>
+                            </div>
                         </div>
-                        <div class="d-flex justify-content-end mt-2">
-                            <span id="horesProgressText" class="fw-semibold text-dark">0 / 200H</span>
-                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-center mt-4">
+                        <button type="button" class="btn btn-registrar-jornada text-uppercase fw-semibold" onclick="anarARegistrarJornada()">
+                            Registrar Jornada
+                        </button>
                     </div>
                 </div>
 
-                <div class="d-flex justify-content-center mt-4">
-                    <button type="button" class="btn btn-registrar-jornada text-uppercase fw-semibold" onclick="anarARegistrarJornada()">
-                        Registrar Jornada
-                    </button>
+                <div id="homeRoleContent" class="d-none"></div>
                 </div>
                 </div>
-
-            </div>
 
             <div class="tab-pane fade h-100" id="chatTab" role="tabpanel" aria-labelledby="chat-tab">
                 <iframe id="chatFrame" src="/chat.html" class="w-100 h-100 border-0"></iframe>
@@ -526,6 +529,7 @@
                                         </div>
                                         <small class="text-muted d-block mt-2" id="profileProgressText">0 / 200H</small>
                                     </div>
+                                    <div id="profileRoleInsights" class="mt-3"></div>
                                 </div>
                             </div>
                         </div>
@@ -533,11 +537,7 @@
                             <div class="card shadow-sm border-0">
                                 <div class="card-body p-4">
                                     <h3 class="fs-6 text-dark text-uppercase fw-semibold mb-3" style="letter-spacing: 0.5px;">Accions ràpides</h3>
-                                    <div class="d-flex flex-column flex-md-row gap-2 profile-quick-actions">
-                                        <button type="button" class="btn btn-dark text-uppercase fw-semibold" onclick="anarARegistrarJornada()">Registrar jornada</button>
-                                        <button type="button" class="btn btn-outline-dark text-uppercase fw-semibold" onclick="switchTab('ras'); restoreTab('ras');">Veure RA's</button>
-                                        <button type="button" class="btn btn-outline-secondary text-uppercase fw-semibold" onclick="switchTab('chat'); restoreTab('chat');">Obrir xat</button>
-                                    </div>
+                                    <div id="profileQuickActions" class="d-flex flex-column flex-md-row gap-2 profile-quick-actions"></div>
                                 </div>
                             </div>
                         </div>
@@ -552,6 +552,9 @@
         const API_URL = '/api';
         let token = localStorage.getItem('token');
         let currentUser = null;
+        let dashboardSummary = null;
+        let dashboardSummaryLoaded = false;
+        let chatUnreadIntervalId = null;
 
         // Funcions per mostrar notificacions toast
         function showToast(message, type = 'success') {
@@ -640,24 +643,67 @@
             document.getElementById('loginContainer').classList.add('d-none');
             document.getElementById('dashboard').style.display = 'flex';
             document.getElementById('dashboard').classList.remove('d-none');
+            dashboardSummary = null;
+            dashboardSummaryLoaded = false;
 
             document.getElementById('userName').textContent = currentUser.name;
             document.querySelectorAll('.nomUsuari').forEach((el) => {
                 el.textContent = currentUser.name;
             });
-            document.getElementById('userRole').textContent = currentUser.role;
+            const etiquetaRol = obtenirEtiquetaRol(currentUser.role);
+            document.getElementById('userRole').textContent = etiquetaRol;
             document.getElementById('userNameHeader').textContent = currentUser.name;
-            document.getElementById('userRoleHeader').textContent = currentUser.role;
+            document.getElementById('userRoleHeader').textContent = etiquetaRol;
+
             actualitzarProgresHores([]);
+            actualitzarPanellsPerRol();
+            renderAccionsRapidesPerfil();
             actualitzarPerfilUsuari();
             carregarJornades();
+            carregarResumDashboard();
 
             const activeTab = localStorage.getItem('activeTab') || 'home';
             restoreTab(activeTab);
 
-            // Comprovar missatges no llegits cada 5 segons
             checkChatUnread();
-            setInterval(checkChatUnread, 5000);
+            if (chatUnreadIntervalId) {
+                clearInterval(chatUnreadIntervalId);
+            }
+            chatUnreadIntervalId = setInterval(checkChatUnread, 7000);
+        }
+
+        async function carregarResumDashboard() {
+            if (!token) {
+                dashboardSummary = null;
+                dashboardSummaryLoaded = true;
+                actualitzarPanellsPerRol();
+                actualitzarPerfilUsuari();
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/dashboard/summary`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('No s\'ha pogut carregar el resum del dashboard');
+                }
+
+                dashboardSummary = await response.json();
+                dashboardSummaryLoaded = true;
+            } catch (error) {
+                console.error('Error carregant resum de dashboard:', error);
+                dashboardSummary = null;
+                dashboardSummaryLoaded = true;
+            }
+
+            actualitzarPanellsPerRol();
+            renderAccionsRapidesPerfil();
+            actualitzarPerfilUsuari();
         }
 
         async function checkChatUnread() {
@@ -832,6 +878,7 @@
         let raIdsMarcatsHistoric = new Set();
         let historicRasCarregat = false;
         const OBJECTIU_HORES = 200;
+        const ROLS_AMB_SEGUIMENT_ALUMNES = new Set(['professor', 'empresari']);
 
         function escapeHtml(value) {
             return String(value ?? '')
@@ -927,7 +974,7 @@
             const mapRol = {
                 alumne: 'Alumne',
                 professor: 'Professor',
-                empresari: 'Empresari'
+                empresari: 'Empresa'
             };
 
             if (mapRol[rolNormalitzat]) {
@@ -967,6 +1014,373 @@
             };
         }
 
+        function obtenirRolActual() {
+            return String(currentUser?.role || '').toLowerCase();
+        }
+
+        function teSeguimentAlumnes() {
+            return ROLS_AMB_SEGUIMENT_ALUMNES.has(obtenirRolActual());
+        }
+
+        function obtenirObjectiuHores() {
+            const objectiuResposta = Number(dashboardSummary?.objective_hours);
+            if (Number.isFinite(objectiuResposta) && objectiuResposta > 0) {
+                return objectiuResposta;
+            }
+
+            return OBJECTIU_HORES;
+        }
+
+        function obtenirResumPropi() {
+            if (dashboardSummary && dashboardSummary.own_summary && typeof dashboardSummary.own_summary === 'object') {
+                return dashboardSummary.own_summary;
+            }
+
+            const resumLocal = calcularResumJornades(jornadesActuals);
+            const horesLocals = calcularHoresRealitzades(jornadesActuals);
+            const objectiu = obtenirObjectiuHores();
+            const percentatge = Math.min((horesLocals / objectiu) * 100, 100);
+
+            return {
+                total_jornades: resumLocal.total,
+                completed_jornades: resumLocal.completes,
+                pending_jornades: resumLocal.pendents,
+                hours_done: Math.round(horesLocals * 10) / 10,
+                hours_remaining: Math.max(0, Math.round((objectiu - horesLocals) * 10) / 10),
+                progress_percentage: Math.round(percentatge * 10) / 10,
+                last_jornada_date: null
+            };
+        }
+
+        function obtenirResumAlumnes() {
+            if (dashboardSummary && dashboardSummary.students_summary && typeof dashboardSummary.students_summary === 'object') {
+                return dashboardSummary.students_summary;
+            }
+
+            return {
+                total_assigned: 0,
+                active_recently: 0,
+                with_pending_jornades: 0,
+                completed_target: 0,
+                with_open_shift_today: 0,
+                average_progress_percentage: 0,
+                total_hours_done: 0,
+                total_hours_remaining: 0
+            };
+        }
+
+        function obtenirAlumnesAssignats() {
+            if (!dashboardSummary || !Array.isArray(dashboardSummary.assigned_students)) {
+                return [];
+            }
+
+            return dashboardSummary.assigned_students;
+        }
+
+        function formatPercentatge(valor) {
+            const percentatge = Number(valor);
+            if (!Number.isFinite(percentatge)) {
+                return '0%';
+            }
+
+            return `${Math.round(percentatge)}%`;
+        }
+
+        function formatDataCurta(data) {
+            if (!data) {
+                return '-';
+            }
+
+            const dataObjecte = new Date(data);
+            if (Number.isNaN(dataObjecte.getTime())) {
+                return '-';
+            }
+
+            return dataObjecte.toLocaleDateString('ca-ES');
+        }
+
+        function obtenirEtiquetaEstatAlumne(alumne) {
+            const resum = alumne?.summary || {};
+
+            if (resum.has_open_shift_today) {
+                return {
+                    text: 'Jornada oberta avui',
+                    className: 'bg-warning text-dark'
+                };
+            }
+
+            if ((resum.pending_jornades || 0) > 0) {
+                return {
+                    text: 'Té pendents',
+                    className: 'bg-danger-subtle text-danger-emphasis'
+                };
+            }
+
+            if (resum.is_active_recently) {
+                return {
+                    text: 'Actiu aquesta setmana',
+                    className: 'bg-success-subtle text-success-emphasis'
+                };
+            }
+
+            return {
+                text: 'Sense activitat recent',
+                className: 'bg-secondary-subtle text-secondary-emphasis'
+            };
+        }
+
+        function renderAccionsRapidesPerfil() {
+            const container = document.getElementById('profileQuickActions');
+            if (!container || !currentUser) {
+                return;
+            }
+
+            const rol = obtenirRolActual();
+
+            if (rol === 'alumne') {
+                container.innerHTML = `
+                    <button type="button" class="btn btn-dark text-uppercase fw-semibold" onclick="anarARegistrarJornada()">Registrar jornada</button>
+                    <button type="button" class="btn btn-outline-dark text-uppercase fw-semibold" onclick="switchTab('ras'); restoreTab('ras');">Veure RA's</button>
+                    <button type="button" class="btn btn-outline-secondary text-uppercase fw-semibold" onclick="switchTab('chat'); restoreTab('chat');">Obrir xat</button>
+                `;
+                return;
+            }
+
+            if (rol === 'professor') {
+                container.innerHTML = `
+                    <button type="button" class="btn btn-dark text-uppercase fw-semibold" onclick="switchTab('home'); restoreTab('home');">Veure seguiment</button>
+                    <button type="button" class="btn btn-outline-dark text-uppercase fw-semibold" onclick="switchTab('support'); restoreTab('support');">Revisar assistència</button>
+                    <button type="button" class="btn btn-outline-secondary text-uppercase fw-semibold" onclick="switchTab('chat'); restoreTab('chat');">Obrir xat</button>
+                `;
+                return;
+            }
+
+            if (rol === 'empresari') {
+                container.innerHTML = `
+                    <button type="button" class="btn btn-dark text-uppercase fw-semibold" onclick="switchTab('home'); restoreTab('home');">Veure alumnes</button>
+                    <button type="button" class="btn btn-outline-dark text-uppercase fw-semibold" onclick="switchTab('companies'); restoreTab('companies');">Empreses</button>
+                    <button type="button" class="btn btn-outline-secondary text-uppercase fw-semibold" onclick="switchTab('chat'); restoreTab('chat');">Obrir xat</button>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <button type="button" class="btn btn-dark text-uppercase fw-semibold" onclick="switchTab('home'); restoreTab('home');">Inici</button>
+                <button type="button" class="btn btn-outline-dark text-uppercase fw-semibold" onclick="switchTab('ras'); restoreTab('ras');">Veure RA's</button>
+                <button type="button" class="btn btn-outline-secondary text-uppercase fw-semibold" onclick="switchTab('chat'); restoreTab('chat');">Obrir xat</button>
+            `;
+        }
+
+        function renderHomePerRol() {
+            const homeStudent = document.getElementById('homeStudentContent');
+            const homeRole = document.getElementById('homeRoleContent');
+            if (!homeStudent || !homeRole || !currentUser) {
+                return;
+            }
+
+            const rol = obtenirRolActual();
+            if (!teSeguimentAlumnes()) {
+                homeStudent.classList.remove('d-none');
+                homeRole.classList.add('d-none');
+                homeRole.innerHTML = '';
+                return;
+            }
+
+            homeStudent.classList.add('d-none');
+            homeRole.classList.remove('d-none');
+
+            if (!dashboardSummaryLoaded) {
+                homeRole.innerHTML = `
+                    <div class="card gov-card shadow-sm border-0">
+                        <div class="card-body p-4 p-md-5">
+                            <p class="text-muted mb-0">Carregant resum de seguiment...</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            if (!dashboardSummary) {
+                homeRole.innerHTML = `
+                    <div class="card gov-card-secondary shadow-sm border-0">
+                        <div class="card-body p-4 p-md-5">
+                            <p class="mb-0 text-muted">No s'ha pogut carregar el resum d'alumnes ara mateix.</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            const resumPropi = obtenirResumPropi();
+            const resumAlumnes = obtenirResumAlumnes();
+            const alumnes = obtenirAlumnesAssignats();
+            const textRol = rol === 'professor'
+                ? 'Seguiment docent'
+                : 'Seguiment empresa';
+            const textContext = rol === 'professor'
+                ? 'Controla l\'activitat dels alumnes assignats i detecta pendents.'
+                : 'Visualitza l\'estat dels alumnes que tens assignats a l\'empresa.';
+
+            const taulaAlumnes = alumnes.length === 0
+                ? '<div class="alert alert-info mb-0">No tens alumnes assignats en aquest moment.</div>'
+                : `
+                    <div class="table-responsive">
+                        <table class="table align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Alumne</th>
+                                    <th>Hores</th>
+                                    <th>Restants</th>
+                                    <th>Pendents</th>
+                                    <th>Estat</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${alumnes.map((alumne) => {
+                                    const resum = alumne.summary || {};
+                                    const estat = obtenirEtiquetaEstatAlumne(alumne);
+                                    const contractes = Array.isArray(alumne.assigned_contracts)
+                                        ? alumne.assigned_contracts.join(' · ')
+                                        : '';
+                                    return `
+                                        <tr>
+                                            <td>
+                                                <div class="fw-semibold text-dark">${escapeHtml(alumne.name || '-')}</div>
+                                                <div class="small text-muted">${escapeHtml(alumne.email || '-')}</div>
+                                                ${contractes ? `<div class="small text-muted">${escapeHtml(contractes)}</div>` : ''}
+                                            </td>
+                                            <td class="fw-semibold">${formatHores(Number(resum.hours_done || 0))}h</td>
+                                            <td>${formatHores(Number(resum.hours_remaining || 0))}h</td>
+                                            <td>${Number(resum.pending_jornades || 0)}</td>
+                                            <td><span class="badge ${estat.className}">${estat.text}</span></td>
+                                        </tr>
+                                    `;
+                                }).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+
+            homeRole.innerHTML = `
+                <div class="card gov-card shadow-sm border-0 mb-4">
+                    <div class="card-body p-4 p-md-5">
+                        <h2 class="fs-5 text-dark text-uppercase fw-semibold mb-2" style="letter-spacing: 0.5px;">${textRol}</h2>
+                        <p class="text-muted mb-0">${textContext}</p>
+                    </div>
+                </div>
+                <div class="row g-3 g-md-4">
+                    <div class="col-12 col-md-6 col-xl-3">
+                        <div class="card gov-card-secondary bg-light border-0 h-100">
+                            <div class="card-body p-3 p-md-4">
+                                <label class="text-muted text-uppercase small fw-bold d-block mb-2" style="letter-spacing: 0.8px; font-size: 0.6875rem;">Hores pròpies</label>
+                                <span class="d-block fs-5 text-dark fw-medium">${formatHores(Number(resumPropi.hours_done || 0))}h</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-xl-3">
+                        <div class="card gov-card-secondary bg-light border-0 h-100">
+                            <div class="card-body p-3 p-md-4">
+                                <label class="text-muted text-uppercase small fw-bold d-block mb-2" style="letter-spacing: 0.8px; font-size: 0.6875rem;">Alumnes assignats</label>
+                                <span class="d-block fs-5 text-dark fw-medium">${Number(resumAlumnes.total_assigned || 0)}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-xl-3">
+                        <div class="card gov-card-secondary bg-light border-0 h-100">
+                            <div class="card-body p-3 p-md-4">
+                                <label class="text-muted text-uppercase small fw-bold d-block mb-2" style="letter-spacing: 0.8px; font-size: 0.6875rem;">Actius setmana</label>
+                                <span class="d-block fs-5 text-dark fw-medium">${Number(resumAlumnes.active_recently || 0)}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-xl-3">
+                        <div class="card gov-card-secondary bg-light border-0 h-100">
+                            <div class="card-body p-3 p-md-4">
+                                <label class="text-muted text-uppercase small fw-bold d-block mb-2" style="letter-spacing: 0.8px; font-size: 0.6875rem;">Amb pendents</label>
+                                <span class="d-block fs-5 text-dark fw-medium">${Number(resumAlumnes.with_pending_jornades || 0)}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card gov-card shadow-sm border-0 mt-4">
+                    <div class="card-body p-4 p-md-5">
+                        <h3 class="fs-5 text-dark text-uppercase fw-semibold pb-3 mb-4 border-bottom" style="letter-spacing: 0.5px;">Alumnes assignats</h3>
+                        ${taulaAlumnes}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderPerfilInsightsPerRol() {
+            const container = document.getElementById('profileRoleInsights');
+            if (!container || !currentUser) {
+                return;
+            }
+
+            if (!teSeguimentAlumnes()) {
+                container.innerHTML = '';
+                return;
+            }
+
+            if (!dashboardSummaryLoaded) {
+                container.innerHTML = '<small class="text-muted d-block mt-2">Carregant seguiment d\'alumnes...</small>';
+                return;
+            }
+
+            if (!dashboardSummary) {
+                container.innerHTML = '<small class="text-muted d-block mt-2">No s\'ha pogut carregar el seguiment d\'alumnes.</small>';
+                return;
+            }
+
+            const resumAlumnes = obtenirResumAlumnes();
+            const alumnes = obtenirAlumnesAssignats();
+            const topPendents = [...alumnes]
+                .sort((a, b) => (b?.summary?.pending_jornades || 0) - (a?.summary?.pending_jornades || 0))
+                .slice(0, 4);
+
+            const llistaPendents = topPendents.length === 0
+                ? '<p class="small text-muted mb-0">No hi ha alumnes per mostrar.</p>'
+                : topPendents.map((alumne) => {
+                    const pendents = Number(alumne?.summary?.pending_jornades || 0);
+                    const darreraData = formatDataCurta(alumne?.summary?.last_jornada_date);
+                    return `
+                        <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                            <div>
+                                <div class="small fw-semibold text-dark">${escapeHtml(alumne.name || '-')}</div>
+                                <div class="small text-muted">Darrera jornada: ${escapeHtml(darreraData)}</div>
+                            </div>
+                            <span class="badge ${pendents > 0 ? 'bg-danger-subtle text-danger-emphasis' : 'bg-success-subtle text-success-emphasis'}">
+                                ${pendents} pendents
+                            </span>
+                        </div>
+                    `;
+                }).join('');
+
+            container.innerHTML = `
+                <div class="card border-0 bg-light mt-3">
+                    <div class="card-body p-3">
+                        <div class="row g-3 mb-2">
+                            <div class="col-6">
+                                <small class="text-uppercase fw-semibold text-muted d-block" style="letter-spacing: 0.4px;">Mitjana progrés</small>
+                                <span class="fw-semibold text-dark">${formatPercentatge(resumAlumnes.average_progress_percentage)}</span>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-uppercase fw-semibold text-muted d-block" style="letter-spacing: 0.4px;">Jornada oberta avui</small>
+                                <span class="fw-semibold text-dark">${Number(resumAlumnes.with_open_shift_today || 0)}</span>
+                            </div>
+                        </div>
+                        <small class="text-uppercase fw-semibold text-muted d-block mb-2" style="letter-spacing: 0.4px;">Alumnes amb més pendents</small>
+                        ${llistaPendents}
+                    </div>
+                </div>
+            `;
+        }
+
+        function actualitzarPanellsPerRol() {
+            renderHomePerRol();
+            renderPerfilInsightsPerRol();
+        }
+
         function actualitzarTextPerfil(id, valor) {
             const element = document.getElementById(id);
             if (element) {
@@ -979,17 +1393,23 @@
                 return;
             }
 
+            const rolActual = obtenirRolActual();
             const nom = currentUser.name || 'Usuari';
             const correu = currentUser.email || 'No disponible';
             const etiquetaRol = obtenirEtiquetaRol(currentUser.role);
             const dataAlta = formatDataUsuari(currentUser.created_at);
             const idUsuari = currentUser.id ? `#${currentUser.id}` : 'No disponible';
-            const resum = calcularResumJornades(jornadesActuals);
-            const horesTotals = calcularHoresRealitzades(jornadesActuals);
-            const percentatge = Math.min((horesTotals / OBJECTIU_HORES) * 100, 100);
-            const textContextRol = currentUser.role === 'alumne'
+            const resumPropi = obtenirResumPropi();
+            const horesTotals = Number(resumPropi.hours_done || 0);
+            const objectiu = obtenirObjectiuHores();
+            const percentatge = Math.min((horesTotals / objectiu) * 100, 100);
+            const textContextRol = rolActual === 'alumne'
                 ? 'Consulta el teu progrés de jornades i objectius formatius.'
-                : 'Gestiona la teva activitat i comunicació dins el portal.';
+                : rolActual === 'professor'
+                    ? 'Supervisa el progrés dels alumnes i detecta incidències.'
+                    : rolActual === 'empresari'
+                        ? 'Controla les hores i l\'estat dels alumnes assignats a l\'empresa.'
+                        : 'Gestiona la teva activitat i comunicació dins el portal.';
 
             actualitzarTextPerfil('profileUserInitials', obtenirInicialsNom(nom));
             actualitzarTextPerfil('profileUserName', nom);
@@ -1004,17 +1424,17 @@
             actualitzarTextPerfil('profileInfoSince', dataAlta);
             actualitzarTextPerfil('profileInfoStatus', 'Actiu');
 
-            actualitzarTextPerfil('profileTotalJornades', String(resum.total));
+            actualitzarTextPerfil('profileTotalJornades', String(Number(resumPropi.total_jornades || 0)));
             actualitzarTextPerfil('profileHoresTotals', `${formatHores(horesTotals)}h`);
-            actualitzarTextPerfil('profileJornadesCompletes', String(resum.completes));
-            actualitzarTextPerfil('profileJornadesPendents', String(resum.pendents));
+            actualitzarTextPerfil('profileJornadesCompletes', String(Number(resumPropi.completed_jornades || 0)));
+            actualitzarTextPerfil('profileJornadesPendents', String(Number(resumPropi.pending_jornades || 0)));
             actualitzarTextPerfil('profileObjectiuPercent', `${Math.round(percentatge)}%`);
-            actualitzarTextPerfil('profileProgressText', `${formatHores(horesTotals)} / ${OBJECTIU_HORES}H`);
+            actualitzarTextPerfil('profileProgressText', `${formatHores(horesTotals)} / ${objectiu}H`);
 
             const barraProgres = document.getElementById('profileProgressBar');
             if (barraProgres) {
                 barraProgres.style.width = `${percentatge}%`;
-                barraProgres.parentElement?.setAttribute('aria-valuenow', Math.min(horesTotals, OBJECTIU_HORES).toFixed(1));
+                barraProgres.parentElement?.setAttribute('aria-valuenow', Math.min(horesTotals, objectiu).toFixed(1));
             }
         }
 
@@ -1074,11 +1494,12 @@
             }
 
             const horesTotals = calcularHoresRealitzades(jornades);
-            const percentatge = Math.min((horesTotals / OBJECTIU_HORES) * 100, 100);
+            const objectiu = obtenirObjectiuHores();
+            const percentatge = Math.min((horesTotals / objectiu) * 100, 100);
 
             progressBar.style.width = `${percentatge}%`;
-            progressBar.parentElement?.setAttribute('aria-valuenow', Math.min(horesTotals, OBJECTIU_HORES).toFixed(1));
-            progressText.textContent = `${formatHores(horesTotals)} / ${OBJECTIU_HORES}H`;
+            progressBar.parentElement?.setAttribute('aria-valuenow', Math.min(horesTotals, objectiu).toFixed(1));
+            progressText.textContent = `${formatHores(horesTotals)} / ${objectiu}H`;
         }
 
         async function obtenirModulsRas() {
@@ -1294,10 +1715,18 @@
             localStorage.removeItem('user');
             token = null;
             currentUser = null;
+            dashboardSummary = null;
+            dashboardSummaryLoaded = false;
             jornadesActuals = [];
             raIdsMarcatsHistoric = new Set();
             historicRasCarregat = false;
+            if (chatUnreadIntervalId) {
+                clearInterval(chatUnreadIntervalId);
+                chatUnreadIntervalId = null;
+            }
             actualitzarProgresHores([]);
+            actualitzarPanellsPerRol();
+            renderAccionsRapidesPerfil();
             actualitzarPerfilUsuari();
             document.getElementById('loginContainer').style.display = 'flex';
             document.getElementById('loginContainer').classList.remove('d-none');
@@ -1401,6 +1830,7 @@
                     document.getElementById('dataJornada').value = avui;
 
                     carregarJornades();
+                    carregarResumDashboard();
                 } else {
                     showToast(result.error || 'Error en guardar la jornada', 'error');
                 }
@@ -1423,8 +1853,15 @@
                 mostrarJornades(jornades);
             } catch (error) {
                 console.error('Error carregant jornades:', error);
+                jornadesActuals = [];
                 actualitzarRasMarcatsHistoric([]);
-                document.getElementById('llistatJornades').innerHTML = '<p class="text-danger">Error carregant les jornades.</p>';
+                actualitzarProgresHores([]);
+                actualitzarPerfilUsuari();
+                actualitzarPanellsPerRol();
+                const llistat = document.getElementById('llistatJornades');
+                if (llistat) {
+                    llistat.innerHTML = '<p class="text-danger">Error carregant les jornades.</p>';
+                }
             }
         }
 
@@ -1434,6 +1871,7 @@
             actualitzarRasMarcatsHistoric(jornadesActuals);
             actualitzarProgresHores(jornadesActuals);
             actualitzarPerfilUsuari();
+            actualitzarPanellsPerRol();
 
             if (jornadesActuals.length === 0) {
                 container.innerHTML = '<p class="text-center text-muted">Encara no has registrat cap jornada.</p>';
@@ -1578,6 +2016,7 @@
                     modal.hide();
 
                     carregarJornades();
+                    carregarResumDashboard();
                 } else {
                     showToast(result.error || 'Error en actualitzar la jornada', 'error');
                 }
@@ -1604,6 +2043,7 @@
                 if (response.ok) {
                     showToast('Jornada eliminada correctament', 'success');
                     carregarJornades();
+                    carregarResumDashboard();
                 } else {
                     showToast('Error en eliminar la jornada', 'error');
                 }

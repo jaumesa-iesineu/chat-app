@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\AssistenciaController;
 use App\Http\Controllers\Api\ChatController;
+use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\RaController;
 use App\Http\Controllers\EmpresaController;
 use Illuminate\Support\Facades\Route;
@@ -16,6 +17,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/users', [AuthController::class, 'users']);
+    Route::get('/dashboard/summary', [DashboardController::class, 'resum']);
 
     //empreses
     Route::get('/empreses', [EmpresaController::class, 'llistar_empreses']);
