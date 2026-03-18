@@ -6,6 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Contract;
+use App\Models\Empresa;
 use Illuminate\Support\Facades\Hash;
 
 class UsersSeeder extends Seeder
@@ -28,12 +29,16 @@ class UsersSeeder extends Seeder
             'role' => 'professor',
         ]);
 
-        // Crear alumne
+        // Obtenir la primera empresa per assignar-la a l'alumne
+        $empresa = Empresa::first();
+
+        // Crear alumne (assignat a una empresa)
         $alumne = User::create([
             'name' => 'Juan López',
             'email' => 'alumne@example.com',
             'password' => Hash::make('password123'),
             'role' => 'alumne',
+            'empresa_id' => $empresa?->id,
         ]);
 
         // Crear empresari

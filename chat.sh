@@ -31,7 +31,7 @@ show_menu() {
 
 # Funció per verificar si MySQL està funcionant
 check_mysql() {
-    if brew services list | grep mysql | grep started > /dev/null; then
+    if mysqladmin ping -h 127.0.0.1 --silent 2>/dev/null; then
         return 0
     else
         return 1
@@ -51,14 +51,18 @@ check_laravel() {
 start_all() {
     echo -e "${GREEN}=== Engegant serveis ===${NC}"
 
-    # Iniciar MySQL
+    # Iniciar MySQL (com a usuari normal, no com a root)
     echo -ne "Iniciant MySQL... "
     if check_mysql; then
         echo -e "${YELLOW}Ja està funcionant${NC}"
     else
-        brew services start mysql
-        echo -e "${GREEN}Iniciat${NC}"
-        sleep 3
+        sudo -u jaumesampolalcover mysql.server start
+        sleep 2
+        if check_mysql; then
+            echo -e "${GREEN}Iniciat${NC}"
+        else
+            echo -e "${RED}Error en iniciar MySQL${NC}"
+        fi
     fi
 
     # Iniciar servidor Laravel
@@ -98,7 +102,7 @@ stop_all() {
     # Aturar MySQL
     echo -ne "Aturant MySQL... "
     if check_mysql; then
-        brew services stop mysql
+        mysql.server stop
         echo -e "${GREEN}Aturat${NC}"
     else
         echo -e "${YELLOW}No estava funcionant${NC}"

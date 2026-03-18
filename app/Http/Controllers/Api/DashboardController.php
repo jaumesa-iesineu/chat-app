@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Jornada;
+use App\Models\Ra;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -19,17 +20,30 @@ class DashboardController extends Controller
         $rolUsuari = strtolower((string) $usuari->role);
         $jornadesPropies = Jornada::query()
             ->withCount('ras')
+            ->with('ras:id')
             ->where('user_id', $usuari->id)
             ->orderBy('data', 'desc')
             ->orderBy('hora_entrada', 'desc')
             ->get();
 
         $resumPropi = $this->resumDesDeJornades($jornadesPropies);
+        $totalRas = Ra::count();
+
+        // RA únics completats per l'usuari actual
+        $rasPropisUnics = $jornadesPropies
+            ->flatMap(fn ($j) => $j->ras ?? collect())
+            ->pluck('id')
+            ->unique()
+            ->count();
+
         $resposta = [
             'role' => $rolUsuari,
             'objective_hours' => self::OBJECTIU_HORES,
+            'total_ras' => $totalRas,
             'contracts' => $usuari->contracts->pluck('name')->values(),
-            'own_summary' => $resumPropi,
+            'own_summary' => array_merge($resumPropi, [
+                'total_ras_unics' => $rasPropisUnics,
+            ]),
             'assigned_students' => [],
             'students_summary' => $this->resumAlumnesBuit(),
         ];
@@ -44,12 +58,12 @@ class DashboardController extends Controller
         }
 
         $alumnes = User::query()
-            ->select(['users.id', 'users.name', 'users.email', 'users.role'])
+            ->select(['users.id', 'users.name', 'users.email', 'users.role', 'users.empresa_id'])
             ->where('users.role', 'alumne')
             ->whereHas('contracts', function ($query) use ($contractesIds) {
                 $query->whereIn('contracts.id', $contractesIds);
             })
-            ->with(['contracts:id,name'])
+            ->with(['contracts:id,name', 'empresa:id,title'])
             ->orderBy('users.name')
             ->get();
 
@@ -59,6 +73,7 @@ class DashboardController extends Controller
 
         $jornadesAlumnes = Jornada::query()
             ->withCount('ras')
+            ->with('ras:id')
             ->whereIn('user_id', $alumnes->pluck('id'))
             ->orderBy('data', 'desc')
             ->orderBy('hora_entrada', 'desc')
@@ -74,13 +89,20 @@ class DashboardController extends Controller
                 ->pluck('name')
                 ->values();
 
+            $rasUnics = $jornadesAlumne
+                ->flatMap(fn ($j) => $j->ras->pluck('id'))
+                ->unique()
+                ->count();
+
             $alumnesResum[] = [
                 'id' => $alumne->id,
                 'name' => $alumne->name,
                 'email' => $alumne->email,
+                'empresa_name' => $alumne->empresa->title ?? null,
                 'assigned_contracts' => $contractesAssignats,
                 'summary' => [
                     ...$resumAlumne,
+                    'total_ras_unics' => $rasUnics,
                     'is_active_recently' => $this->esActiuRecentment($resumAlumne['last_jornada_date']),
                     'has_open_shift_today' => $this->teJornadaObertaAvui($jornadesAlumne),
                 ],

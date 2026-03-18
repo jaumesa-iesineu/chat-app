@@ -7,9 +7,25 @@ use App\Models\Empresa;
 
 class EmpresaController extends Controller
 {
-    public function llistar_empreses()
+    /**
+     * Llista les empreses.
+     * Si l'usuari és alumne, només retorna la seva empresa assignada.
+     * Professors i empresaris veuen totes.
+     */
+    public function llistar_empreses(Request $request)
     {
-        $empreses = Empresa::all();
+        $usuari = $request->user();
+
+        if ($usuari->role === 'alumne') {
+            if ($usuari->empresa_id) {
+                $empreses = Empresa::where('id', $usuari->empresa_id)->get();
+            } else {
+                $empreses = collect([]);
+            }
+        } else {
+            $empreses = Empresa::all();
+        }
+
         return response()->json($empreses);
     }
 
