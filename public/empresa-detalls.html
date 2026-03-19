@@ -102,7 +102,7 @@
                             <div class="col-12 col-lg-4">
                                 <div class="card gov-card shadow-sm border-0 h-100">
                                     <div class="card-body p-4 p-md-5 text-center">
-                                        <img src="${empresa.logo_url}" alt="${empresa.title}" class="img-fluid rounded shadow-sm" style="max-height: 300px; object-fit: contain;">
+                                        <img src="${empresa.logo_url}" alt="${empresa.title}" class="img-fluid rounded shadow-sm" style="max-height: 120px; object-fit: contain;">
                                     </div>
                                 </div>
                             </div>
@@ -144,6 +144,22 @@
                                                         <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>
                                                     </svg>
                                                     ${empresa.nom_empresari}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ` : ''}
+                                ${empresa.empresari?.user?.name ? `
+                                    <div class="col-12 col-md-6">
+                                        <div class="card gov-card-secondary bg-light border-0">
+                                            <div class="card-body p-4">
+                                                <label class="text-muted text-uppercase small fw-bold d-block mb-2" style="letter-spacing: 0.8px; font-size: 0.6875rem;">Tutor empresari</label>
+                                                <p class="text-dark mb-0 fs-5">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-mortarboard-fill me-2" viewBox="0 0 16 16">
+                                                        <path d="M8.211 2.047a.5.5 0 0 0-.422 0l-7.5 3.5a.5.5 0 0 0 .025.917l7.5 3a.5.5 0 0 0 .372 0L14 7.14V13a1 1 0 0 0-1 1v2h3v-2a1 1 0 0 0-1-1V6.739l.686-.275a.5.5 0 0 0 .025-.917l-7.5-3.5Z"/>
+                                                        <path d="M4.176 9.032a.5.5 0 0 0-.656.327l-.5 1.7a.5.5 0 0 0 .294.605l4.5 1.8a.5.5 0 0 0 .372 0l4.5-1.8a.5.5 0 0 0 .294-.605l-.5-1.7a.5.5 0 0 0-.656-.327L8 10.466 4.176 9.032Z"/>
+                                                    </svg>
+                                                    ${empresa.empresari.user.name}
                                                 </p>
                                             </div>
                                         </div>

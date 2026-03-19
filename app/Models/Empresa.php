@@ -11,6 +11,8 @@ class Empresa extends Model
 {
     use HasFactory;
 
+    protected $appends = ['logo_url'];
+
     protected $fillable = [
         'title',
         'logo',

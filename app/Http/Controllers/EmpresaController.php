@@ -19,7 +19,7 @@ class EmpresaController extends Controller
         if ($usuari->alumne) {
             $empreses = collect([]);
         } else {
-            $empreses = Empresa::all();
+            $empreses = Empresa::with('empresari.user:id,name,email')->get();
         }
 
         return response()->json($empreses);
@@ -27,7 +27,7 @@ class EmpresaController extends Controller
 
     public function obtenir_detalls($id)
     {
-        $empresa = Empresa::find($id);
+        $empresa = Empresa::with('empresari.user:id,name,email')->find($id);
 
         if (!$empresa) {
             return response()->json(['error' => 'Empresa no trobada'], 404);
