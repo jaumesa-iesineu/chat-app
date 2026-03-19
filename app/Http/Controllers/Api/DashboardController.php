@@ -17,7 +17,7 @@ class DashboardController extends Controller
     public function resum(Request $request)
     {
         $usuari = $request->user()->loadMissing('contracts:id,name');
-        $rolUsuari = strtolower((string) $usuari->role);
+        $rolUsuari = $usuari->role;
         $jornadesPropies = Jornada::query()
             ->withCount('ras')
             ->with('ras:id')
@@ -58,12 +58,12 @@ class DashboardController extends Controller
         }
 
         $alumnes = User::query()
-            ->select(['users.id', 'users.name', 'users.email', 'users.role', 'users.empresa_id'])
-            ->where('users.role', 'alumne')
+            ->select(['users.id', 'users.name', 'users.email'])
+            ->whereHas('alumne')
             ->whereHas('contracts', function ($query) use ($contractesIds) {
                 $query->whereIn('contracts.id', $contractesIds);
             })
-            ->with(['contracts:id,name', 'empresa:id,title'])
+            ->with(['contracts:id,name', 'alumne'])
             ->orderBy('users.name')
             ->get();
 
@@ -98,7 +98,7 @@ class DashboardController extends Controller
                 'id' => $alumne->id,
                 'name' => $alumne->name,
                 'email' => $alumne->email,
-                'empresa_name' => $alumne->empresa->title ?? null,
+                'empresa_name' => null,
                 'assigned_contracts' => $contractesAssignats,
                 'summary' => [
                     ...$resumAlumne,

@@ -4,8 +4,8 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -25,7 +25,6 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role',
     ];
 
     /**
@@ -60,10 +59,39 @@ class User extends Authenticatable
     }
 
     /**
-     * Empresa a la qual està assignat l'usuari (alumnes).
+     * Atributs afegits automàticament al JSON.
      */
-    public function empresa(): BelongsTo
+    protected $appends = ['role'];
+
+    /**
+     * Retorna el rol derivat de les taules relacionades.
+     */
+    public function getRoleAttribute(): string
     {
-        return $this->belongsTo(Empresa::class);
+        if ($this->relationLoaded('professor') ? $this->professor !== null : $this->professor()->exists()) {
+            return 'professor';
+        }
+        if ($this->relationLoaded('empresari') ? $this->empresari !== null : $this->empresari()->exists()) {
+            return 'empresari';
+        }
+        if ($this->relationLoaded('alumne') ? $this->alumne !== null : $this->alumne()->exists()) {
+            return 'alumne';
+        }
+        return 'unknown';
+    }
+
+    public function professor(): HasOne
+    {
+        return $this->hasOne(Professor::class);
+    }
+
+    public function alumne(): HasOne
+    {
+        return $this->hasOne(Alumne::class);
+    }
+
+    public function empresari(): HasOne
+    {
+        return $this->hasOne(Empresari::class);
     }
 }

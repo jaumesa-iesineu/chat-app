@@ -16,12 +16,8 @@ class EmpresaController extends Controller
     {
         $usuari = $request->user();
 
-        if ($usuari->role === 'alumne') {
-            if ($usuari->empresa_id) {
-                $empreses = Empresa::where('id', $usuari->empresa_id)->get();
-            } else {
-                $empreses = collect([]);
-            }
+        if ($usuari->alumne) {
+            $empreses = collect([]);
         } else {
             $empreses = Empresa::all();
         }

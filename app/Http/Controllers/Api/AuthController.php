@@ -28,6 +28,7 @@ class AuthController extends Controller
             ]);
         }
 
+        $user->loadMissing(['professor', 'alumne', 'empresari']);
         $token = $user->createToken('chat-token')->plainTextToken;
 
         return response()->json([
@@ -41,8 +42,11 @@ class AuthController extends Controller
      */
     public function me(Request $request)
     {
+        $user = $request->user();
+        $user->loadMissing(['professor', 'alumne', 'empresari']);
+
         return response()->json([
-            'user' => $request->user(),
+            'user' => $user,
         ]);
     }
 

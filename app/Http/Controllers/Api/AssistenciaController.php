@@ -24,7 +24,7 @@ class AssistenciaController extends Controller
     public function crear(Request $request)
     {
         // Verificar que l'usuari sigui alumne
-        if ($request->user()->role !== 'alumne') {
+        if (!$request->user()->alumne) {
             return response()->json([
                 'error' => 'Només els alumnes poden registrar jornades'
             ], 403);

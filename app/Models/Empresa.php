@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Empresa extends Model
 {
@@ -18,12 +19,19 @@ class Empresa extends Model
     ];
 
     /**
-     * Alumnes assignats a aquesta empresa.
+     * Empresari propietari d'aquesta empresa.
      */
-    public function alumnes(): HasMany
+    public function empresari(): HasOne
     {
-        return $this->hasMany(User::class, 'empresa_id')
-            ->where('role', 'alumne');
+        return $this->hasOne(Empresari::class);
+    }
+
+    /**
+     * Empresaris assignats a aquesta empresa.
+     */
+    public function empresaris(): HasMany
+    {
+        return $this->hasMany(Empresari::class);
     }
 
     public function getLogoUrlAttribute()
