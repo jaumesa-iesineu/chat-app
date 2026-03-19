@@ -65,8 +65,5 @@ class UsersSeeder extends Seeder
         // Asignar usuarios al contrato
         $contract->users()->attach([$professor->id, $alumne->id, $empresariUser->id]);
 
-        echo "✅ Contrato creado: {$contract->name}\n";
-        echo "✅ 3 usuarios asignados al contrato: professor, alumne y empresari\n";
-        echo "Credenciales para todos: password123\n";
     }
 }
