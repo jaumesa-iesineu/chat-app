@@ -78,6 +78,43 @@ export class ServeiRas extends ServeiApi {
             .filter(modul => modul.ras.length > 0);
     }
 
+    /**
+     * Carrega els alumnes assignats al professor.
+     * @returns {Promise<Array>}
+     */
+    async carregarAlumnesAssignats() {
+        return this.get('/ras/alumnes');
+    }
+
+    /**
+     * Carrega les RA's d'un alumne amb info de jornades.
+     * @param {number} alumneId
+     * @returns {Promise<object>}
+     */
+    async carregarRasAlumne(alumneId) {
+        return this.get(`/ras/alumnes/${alumneId}`);
+    }
+
+    /**
+     * Afegeix una RA a un alumne.
+     * @param {number} alumneId
+     * @param {number} raId
+     * @returns {Promise<{resposta: Response, dades: any}>}
+     */
+    async afegirRaAlumne(alumneId, raId) {
+        return this.post(`/ras/alumnes/${alumneId}`, { ra_id: raId });
+    }
+
+    /**
+     * Treu una RA d'un alumne.
+     * @param {number} alumneId
+     * @param {number} raId
+     * @returns {Promise<Response>}
+     */
+    async treureRaAlumne(alumneId, raId) {
+        return this.delete(`/ras/alumnes/${alumneId}/${raId}`);
+    }
+
     /** Reinicia l'estat del servei. */
     reiniciar() {
         this.marcatsHistoric = new Set();

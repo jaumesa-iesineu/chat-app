@@ -56,6 +56,18 @@ export class UiPerfil {
         assignarText('profileInfoRole', etiquetaRol);
         assignarText('profileInfoStatus', 'Actiu');
 
+        // Info específica del rol
+        const profileRoleExtra = document.getElementById('profileRoleExtra');
+        if (profileRoleExtra) {
+            if (rol === 'professor' && usuari.professor?.curs) {
+                profileRoleExtra.innerHTML = `<span class="badge bg-primary-subtle text-primary-emphasis">${escaparHtml(usuari.professor.curs)}</span>`;
+            } else if (rol === 'alumne' && usuari.alumne?.numero_seguretat_social) {
+                profileRoleExtra.innerHTML = `<small class="text-muted">NSS: ${escaparHtml(usuari.alumne.numero_seguretat_social)}</small>`;
+            } else {
+                profileRoleExtra.innerHTML = '';
+            }
+        }
+
         // KPI: professors/empresaris veuen dades agregades dels alumnes
         if (ROLS_AMB_SEGUIMENT.has(rol)) {
             const resumAlumnes = this.serveiDashboard.obtenirResumAlumnes();

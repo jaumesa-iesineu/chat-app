@@ -33,6 +33,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // RAs
     Route::get('/ras', [RaController::class, 'llistar']);
+    Route::get('/ras/alumnes', [RaController::class, 'alumnesAssignats']);
+    Route::get('/ras/alumnes/{alumneId}', [RaController::class, 'rasAlumne']);
+    Route::post('/ras/alumnes/{alumneId}', [RaController::class, 'afegirRaAlumne']);
+    Route::delete('/ras/alumnes/{alumneId}/{raId}', [RaController::class, 'treureRaAlumne']);
 
     // Assistència
     Route::get('/jornades', [AssistenciaController::class, 'llistarJornades']);

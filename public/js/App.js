@@ -15,6 +15,7 @@ import { ServeiXat } from './serveis/ServeiXat.js';
 
 // UI
 import { UiNotificacions } from './ui/UiNotificacions.js';
+/** @type {number|null} ID de l'alumne seleccionat a la pestanya RA's (professor) */
 import { UiPerfil } from './ui/UiPerfil.js';
 import { UiInici } from './ui/UiInici.js';
 import { UiAssistencia } from './ui/UiAssistencia.js';
@@ -40,6 +41,7 @@ export class App {
 
         // Estat
         this.usuariActual = null;
+        this.alumneRasSeleccionat = null;
     }
 
     /** Punt d'entrada de l'aplicació. */
@@ -117,7 +119,10 @@ export class App {
 
         // Actualitzar capçalera
         const nom = this.usuariActual.name;
-        const etiquetaRol = obtenirEtiquetaRol(this.usuariActual.role);
+        let etiquetaRol = obtenirEtiquetaRol(this.usuariActual.role);
+        if (this.usuariActual.role === 'professor' && this.usuariActual.professor?.curs) {
+            etiquetaRol += ` · ${this.usuariActual.professor.curs}`;
+        }
         assignarText('userName', nom);
         document.querySelectorAll('.nomUsuari').forEach(el => { el.textContent = nom; });
         assignarText('userRole', etiquetaRol);
@@ -240,9 +245,69 @@ export class App {
                 this.ras.assegurarHistoric(),
             ]);
             this.uiRas.renderLlista(moduls);
+
+            // Si és professor, carregar selector d'alumnes
+            if (this.usuariActual?.role === 'professor') {
+                this._carregarAlumnesRas();
+            }
         } catch (error) {
             console.error('Error carregant RA\'s:', error);
             if (contenidor) contenidor.innerHTML = '<p class="text-center text-danger">Error carregant les RA\'s.</p>';
+        }
+    }
+
+    async _carregarAlumnesRas() {
+        try {
+            const alumnes = await this.ras.carregarAlumnesAssignats();
+            this.uiRas.renderSelectorAlumnes(alumnes, (alumneId) => this._carregarRasAlumne(alumneId));
+        } catch (error) {
+            console.error('Error carregant alumnes per RA:', error);
+        }
+    }
+
+    async _carregarRasAlumne(alumneId) {
+        this.alumneRasSeleccionat = alumneId;
+        const contenidor = document.getElementById('rasAlumneContainer');
+        if (contenidor) contenidor.innerHTML = '<p class="text-center text-muted">Carregant RA\'s de l\'alumne...</p>';
+
+        try {
+            const dades = await this.ras.carregarRasAlumne(alumneId);
+            this.uiRas.renderRasAlumne(dades, {
+                onAfegir: (aId, raId) => this._afegirRaAlumne(aId, raId),
+                onTreure: (aId, raId) => this._treureRaAlumne(aId, raId),
+            });
+        } catch (error) {
+            console.error('Error carregant RA\'s alumne:', error);
+            if (contenidor) contenidor.innerHTML = '<p class="text-center text-danger">Error carregant les RA\'s de l\'alumne.</p>';
+        }
+    }
+
+    async _afegirRaAlumne(alumneId, raId) {
+        try {
+            const { resposta, dades } = await this.ras.afegirRaAlumne(alumneId, raId);
+            if (resposta.ok) {
+                UiNotificacions.mostrar('RA afegida correctament', 'success');
+                this._carregarRasAlumne(alumneId);
+            } else {
+                UiNotificacions.mostrar(dades.error || 'Error afegint RA', 'error');
+            }
+        } catch (error) {
+            UiNotificacions.mostrar('Error de connexió', 'error');
+        }
+    }
+
+    async _treureRaAlumne(alumneId, raId) {
+        if (!confirm('Estàs segur que vols treure aquesta RA de l\'alumne?')) return;
+        try {
+            const resposta = await this.ras.treureRaAlumne(alumneId, raId);
+            if (resposta.ok) {
+                UiNotificacions.mostrar('RA treta correctament', 'success');
+                this._carregarRasAlumne(alumneId);
+            } else {
+                UiNotificacions.mostrar('Error treient RA', 'error');
+            }
+        } catch (error) {
+            UiNotificacions.mostrar('Error de connexió', 'error');
         }
     }
 

@@ -16,6 +16,8 @@ class Empresa extends Model
         'logo',
         'description',
         'location',
+        'telefon',
+        'nom_empresari',
     ];
 
     /**
