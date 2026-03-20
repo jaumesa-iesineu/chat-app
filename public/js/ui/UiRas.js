@@ -81,8 +81,14 @@ export class UiRas {
         const select = document.getElementById('selectAlumneRas');
         select.addEventListener('change', () => {
             const id = Number(select.value);
-            if (id) onSeleccionar(id);
-            else document.getElementById('rasAlumneContainer').innerHTML = '';
+            const rasContainer = document.getElementById('rasContainer');
+            if (id) {
+                onSeleccionar(id);
+                if (rasContainer) rasContainer.classList.add('d-none');
+            } else {
+                document.getElementById('rasAlumneContainer').innerHTML = '';
+                if (rasContainer) rasContainer.classList.remove('d-none');
+            }
         });
     }
 
@@ -103,37 +109,103 @@ export class UiRas {
         contenidor.innerHTML = `
             <div class="card gov-card shadow-sm border-0 mb-4">
                 <div class="card-body p-4">
-                    <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
                         <div>
                             <h3 class="fs-5 fw-semibold text-dark mb-1">${escaparHtml(alumne.name)}</h3>
                             <span class="text-muted small">${escaparHtml(alumne.email)}</span>
                         </div>
-                        <div class="text-end">
+                        <div class="d-flex align-items-center gap-3 flex-wrap">
                             <span class="badge bg-primary-subtle text-primary-emphasis fs-6">${completades} / ${totalRas} RA</span>
+                            <select id="selectOrdenacioRas" class="form-select form-select-sm" style="width: auto; min-width: 140px;">
+                                <option value="progres" selected>Progrés</option>
+                                <option value="marcats">Marcats</option>
+                                <option value="no_marcats">No Marcats</option>
+                                <option value="defecte">Per Defecte</option>
+                            </select>
                         </div>
                     </div>
                 </div>
             </div>
-            ${moduls.map(modul => `
-                <div class="card shadow-sm border-0 mb-3">
-                    <div class="card-header bg-white border-bottom py-3">
-                        <span class="badge bg-primary me-2">${escaparHtml(modul.codi)}</span>
-                        <span class="fw-semibold text-dark">${escaparHtml(modul.modul)}</span>
-                    </div>
-                    <ul class="list-group list-group-flush">
-                        ${modul.ras.map(ra => this._renderRaAlumne(ra, alumne.id)).join('')}
-                    </ul>
-                </div>
-            `).join('')}
+            <div id="rasModulsLlista"></div>
         `;
 
-        // Vincular events als botons
-        contenidor.querySelectorAll('.btn-afegir-ra').forEach(btn => {
-            btn.addEventListener('click', () => callbacks.onAfegir(Number(btn.dataset.alumneId), Number(btn.dataset.raId)));
-        });
-        contenidor.querySelectorAll('.btn-treure-ra').forEach(btn => {
-            btn.addEventListener('click', () => callbacks.onTreure(Number(btn.dataset.alumneId), Number(btn.dataset.raId)));
-        });
+        const renderModuls = (ordenacio) => {
+            const llista = document.getElementById('rasModulsLlista');
+            if (!llista) return;
+            llista.innerHTML = this._renderModulsOrdenats(moduls, alumne.id, ordenacio);
+            llista.querySelectorAll('.btn-afegir-ra').forEach(btn => {
+                btn.addEventListener('click', () => callbacks.onAfegir(Number(btn.dataset.alumneId), Number(btn.dataset.raId)));
+            });
+            llista.querySelectorAll('.btn-treure-ra').forEach(btn => {
+                btn.addEventListener('click', () => callbacks.onTreure(Number(btn.dataset.alumneId), Number(btn.dataset.raId)));
+            });
+        };
+
+        renderModuls('progres');
+
+        const selectOrdenacio = document.getElementById('selectOrdenacioRas');
+        selectOrdenacio.addEventListener('change', () => renderModuls(selectOrdenacio.value));
+    }
+
+    /**
+     * Retorna l'HTML dels mòduls ordenats/filtrats segons l'ordenació triada.
+     * @param {Array} moduls
+     * @param {number} alumneId
+     * @param {string} ordenacio - 'progres' | 'marcats' | 'no_marcats' | 'defecte'
+     * @returns {string}
+     */
+    _renderModulsOrdenats(moduls, alumneId, ordenacio) {
+        let modulsMostrats;
+
+        if (ordenacio === 'progres') {
+            modulsMostrats = [...moduls].sort((a, b) => {
+                const compA = a.ras.filter(r => r.completat).length;
+                const compB = b.ras.filter(r => r.completat).length;
+                const ratioA = a.ras.length > 0 ? compA / a.ras.length : 0;
+                const ratioB = b.ras.length > 0 ? compB / b.ras.length : 0;
+                if (ratioB !== ratioA) return ratioB - ratioA;
+                return compB - compA;
+            });
+        } else if (ordenacio === 'marcats') {
+            modulsMostrats = moduls
+                .map(m => ({ ...m, ras: m.ras.filter(r => r.completat) }))
+                .filter(m => m.ras.length > 0);
+        } else if (ordenacio === 'no_marcats') {
+            modulsMostrats = moduls
+                .map(m => ({ ...m, ras: m.ras.filter(r => !r.completat) }))
+                .filter(m => m.ras.length > 0);
+        } else {
+            modulsMostrats = moduls;
+        }
+
+        if (modulsMostrats.length === 0) {
+            return '<div class="alert alert-info text-center">No hi ha RA\'s en aquesta categoria.</div>';
+        }
+
+        return modulsMostrats.map(modul => {
+            const mostrarBadge = ordenacio === 'progres';
+            const comp = mostrarBadge ? modul.ras.filter(r => r.completat).length : 0;
+            const tot = mostrarBadge ? modul.ras.length : 0;
+            const pct = mostrarBadge && tot > 0 ? Math.round((comp / tot) * 100) : 0;
+            const badgeHtml = mostrarBadge
+                ? `<span class="badge bg-secondary-subtle text-secondary-emphasis">${comp}/${tot} (${pct}%)</span>`
+                : '';
+
+            return `
+                <div class="card shadow-sm border-0 mb-3">
+                    <div class="card-header bg-white border-bottom py-3 d-flex align-items-center justify-content-between">
+                        <div>
+                            <span class="badge bg-primary me-2">${escaparHtml(modul.codi)}</span>
+                            <span class="fw-semibold text-dark">${escaparHtml(modul.modul)}</span>
+                        </div>
+                        ${badgeHtml}
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        ${modul.ras.map(ra => this._renderRaAlumne(ra, alumneId)).join('')}
+                    </ul>
+                </div>
+            `;
+        }).join('');
     }
 
     /**
