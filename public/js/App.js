@@ -42,6 +42,9 @@ export class App {
         // Estat
         this.usuariActual = null;
         this.alumneRasSeleccionat = null;
+        this.alumneAssistenciaSeleccionat = null;
+        this.jornadesProfessorat = [];
+        this.contextEdicioJornada = 'alumne';
     }
 
     /** Punt d'entrada de l'aplicació. */
@@ -82,6 +85,9 @@ export class App {
     _tancarSessio() {
         this.auth.tancarSessio();
         this.usuariActual = null;
+        this.alumneAssistenciaSeleccionat = null;
+        this.jornadesProfessorat = [];
+        this.contextEdicioJornada = 'alumne';
         this.dashboard.reiniciar();
         this.assistencia.reiniciar();
         this.ras.reiniciar();
@@ -329,6 +335,43 @@ export class App {
                 this._carregarRasAssistencia(),
                 this._carregarJornades(),
             ]);
+            return;
+        }
+
+        if (this.usuariActual.role === 'professor') {
+            await this._carregarAssistenciaProfessorat();
+        }
+    }
+
+    async _carregarAssistenciaProfessorat() {
+        try {
+            const alumnes = await this.assistencia.carregarAlumnesAssignatsProfessor();
+            this.uiAssistencia.renderSelectorAlumnesProfessorat(
+                alumnes,
+                (alumneId) => this._carregarJornadesProfessoratAlumne(alumneId),
+                this.alumneAssistenciaSeleccionat
+            );
+        } catch (error) {
+            console.error('Error carregant alumnes d\'assistencia:', error);
+            this.uiAssistencia.renderErrorProfessorat('No s\'han pogut carregar els alumnes assignats.');
+        }
+    }
+
+    async _carregarJornadesProfessoratAlumne(alumneId) {
+        this.alumneAssistenciaSeleccionat = alumneId;
+        this.uiAssistencia.renderCarregantJornadesProfessorat();
+
+        try {
+            const dades = await this.assistencia.carregarJornadesAlumneProfessor(alumneId);
+            this.jornadesProfessorat = Array.isArray(dades.jornades) ? dades.jornades : [];
+            this.uiAssistencia.renderTargetesJornadesProfessorat(dades.alumne, this.jornadesProfessorat, {
+                onEditar: (id) => this._editarJornadaProfessorat(id),
+                onEliminar: (id) => this._eliminarJornadaProfessorat(id),
+            });
+        } catch (error) {
+            console.error('Error carregant jornades de l\'alumne:', error);
+            this.jornadesProfessorat = [];
+            this.uiAssistencia.renderErrorProfessorat('No s\'han pogut carregar les jornades de l\'alumne seleccionat.');
         }
     }
 
@@ -421,6 +464,22 @@ export class App {
             UiNotificacions.mostrar('No s\'ha pogut obrir la jornada seleccionada', 'error');
             return;
         }
+        this.contextEdicioJornada = 'alumne';
+        await this._obrirModalEdicioJornada(jornada);
+    }
+
+    async _editarJornadaProfessorat(id) {
+        const jornada = this.jornadesProfessorat.find(j => Number(j.id) === Number(id));
+        if (!jornada) {
+            UiNotificacions.mostrar('No s\'ha pogut obrir la jornada seleccionada', 'error');
+            return;
+        }
+        this.contextEdicioJornada = 'professor';
+        await this._obrirModalEdicioJornada(jornada);
+    }
+
+    async _obrirModalEdicioJornada(jornada) {
+        if (!jornada) return;
 
         try {
             await this.ras.carregarModuls();
@@ -452,18 +511,29 @@ export class App {
         const raIds = this.uiRas.obtenirSeleccionats('editRaCheckboxesContainer');
 
         try {
-            const { resposta, dades } = await this.assistencia.actualitzar(id, {
-                hora_sortida: horaSortida ? horaSortida + ':00' : null,
-                activitats: activitats || null,
-                ra_ids: raIds,
-            });
+            const peticio = this.contextEdicioJornada === 'professor'
+                ? this.assistencia.actualitzarProfessor(id, {
+                    hora_sortida: horaSortida ? horaSortida + ':00' : null,
+                    activitats: activitats || null,
+                    ra_ids: raIds,
+                })
+                : this.assistencia.actualitzar(id, {
+                    hora_sortida: horaSortida ? horaSortida + ':00' : null,
+                    activitats: activitats || null,
+                    ra_ids: raIds,
+                });
 
+            const { resposta, dades } = await peticio;
             if (resposta.ok) {
                 UiNotificacions.mostrar('Jornada actualitzada correctament', 'success');
                 const modal = bootstrap.Modal.getInstance(document.getElementById('editarJornadaModal'));
                 modal.hide();
-                this._carregarJornades();
-                this._carregarResumDashboard();
+                if (this.contextEdicioJornada === 'professor' && this.alumneAssistenciaSeleccionat) {
+                    await this._carregarJornadesProfessoratAlumne(this.alumneAssistenciaSeleccionat);
+                } else {
+                    this._carregarJornades();
+                    this._carregarResumDashboard();
+                }
             } else {
                 UiNotificacions.mostrar(dades.error || 'Error en actualitzar la jornada', 'error');
             }
@@ -482,6 +552,25 @@ export class App {
                 UiNotificacions.mostrar('Jornada eliminada correctament', 'success');
                 this._carregarJornades();
                 this._carregarResumDashboard();
+            } else {
+                UiNotificacions.mostrar('Error en eliminar la jornada', 'error');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            UiNotificacions.mostrar('Error de connexió', 'error');
+        }
+    }
+
+    async _eliminarJornadaProfessorat(id) {
+        if (!confirm('Estàs segur que vols eliminar aquesta jornada de l\'alumne?')) return;
+
+        try {
+            const resposta = await this.assistencia.eliminarProfessor(id);
+            if (resposta.ok) {
+                UiNotificacions.mostrar('Jornada eliminada correctament', 'success');
+                if (this.alumneAssistenciaSeleccionat) {
+                    await this._carregarJornadesProfessoratAlumne(this.alumneAssistenciaSeleccionat);
+                }
             } else {
                 UiNotificacions.mostrar('Error en eliminar la jornada', 'error');
             }

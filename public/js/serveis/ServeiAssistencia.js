@@ -18,6 +18,23 @@ export class ServeiAssistencia extends ServeiApi {
     }
 
     /**
+     * Carrega els alumnes assignats al professor autenticat.
+     * @returns {Promise<Array>}
+     */
+    async carregarAlumnesAssignatsProfessor() {
+        return this.get('/ras/alumnes');
+    }
+
+    /**
+     * Carrega jornades d'un alumne assignat al professor.
+     * @param {number} alumneId
+     * @returns {Promise<{alumne: object, jornades: Array}>}
+     */
+    async carregarJornadesAlumneProfessor(alumneId) {
+        return this.get(`/jornades/professor/alumnes/${alumneId}`);
+    }
+
+    /**
      * Crea una nova jornada.
      * @param {object} dades - { data, hora_entrada, hora_sortida, activitats, ra_ids }
      * @returns {Promise<{resposta: Response, dades: any}>}
@@ -37,12 +54,31 @@ export class ServeiAssistencia extends ServeiApi {
     }
 
     /**
+     * Actualitza una jornada d'un alumne (context professor).
+     * @param {number} id
+     * @param {object} dades
+     * @returns {Promise<{resposta: Response, dades: any}>}
+     */
+    async actualitzarProfessor(id, dades) {
+        return this.put(`/jornades/professor/${id}`, dades);
+    }
+
+    /**
      * Elimina una jornada.
      * @param {number} id
      * @returns {Promise<Response>}
      */
     async eliminar(id) {
         return this.delete(`/jornades/${id}`);
+    }
+
+    /**
+     * Elimina una jornada d'un alumne (context professor).
+     * @param {number} id
+     * @returns {Promise<Response>}
+     */
+    async eliminarProfessor(id) {
+        return this.delete(`/jornades/professor/${id}`);
     }
 
     /**

@@ -39,6 +39,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/ras/alumnes/{alumneId}/{raId}', [RaController::class, 'treureRaAlumne']);
 
     // Assistència
+    Route::get('/jornades/professor/alumnes/{alumneId}', [AssistenciaController::class, 'llistarJornadesAlumneProfessor']);
+    Route::put('/jornades/professor/{id}', [AssistenciaController::class, 'modificarProfessor']);
+    Route::delete('/jornades/professor/{id}', [AssistenciaController::class, 'eliminarProfessor']);
     Route::get('/jornades', [AssistenciaController::class, 'llistarJornades']);
     Route::post('/jornades', [AssistenciaController::class, 'crear']);
     Route::put('/jornades/{id}', [AssistenciaController::class, 'modificar']);
